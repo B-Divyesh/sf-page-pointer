@@ -1,0 +1,14 @@
+{
+  "slug": "page-pointer",
+  "title": "Page Pointer",
+  "territory": "utilities",
+  "user": "Parents, tutors, and emerging readers who want a non-distracting way to keep a child oriented to the exact word or line in a physical book.",
+  "smallest_useful_product": "An offline mobile web app that uses the rear camera to detect printed text baselines, lets the adult tap the current word, and projects a high-contrast line/word guide on the phone screen. Non-goals: book scanning, child profiling, reading assessment, or cloud OCR archives.",
+  "success_measure": "At least 60% of 20 family test sessions keep the guide active for ten minutes and parents report fewer than two manual re-orientations per page.",
+  "artifact_class": "pwa-offline",
+  "monetization": "one-time",
+  "constraints": "Keep camera frames on device; support only printed Latin-script text in v1; avoid claims about diagnosing or treating dyslexia.",
+  "why_distinct": "It supports joint attention during paper reading; it is neither an ebook reader nor a general OCR scanner.",
+  "confidence": 4,
+  "state": "BUILT"
+}
