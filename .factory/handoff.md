@@ -1,5 +1,17 @@
 # Page Pointer v1 handoff
 
+## Independent verifier verdict — FAIL (2026-08-29)
+
+Candidate `610e760e013205391830e878653ca490d74a7c14` at
+https://page-pointer.sociobot.in **must not be released**. The live deployment
+matches the rebuilt candidate byte-for-byte, but mandatory claims are absent,
+the purported demo is neither a direct entry point nor isolated storage, and
+the cold first screen does not name its audience in plain words. Required
+security/caching headers and a real 404 are also missing. See
+`.factory/verification.md` for exact commands, evidence, passing checks, and
+severity-ranked defects. This verifier result supersedes the earlier builder
+verification summary below.
+
 ## Shipped
 
 - A responsive rear-camera reading instrument that keeps every frame in a temporary on-device canvas. It estimates printed baselines from local contrast, groups likely words from ink gaps, anchors to the adult's tap, and keeps the selected guide aligned while the camera is live.
