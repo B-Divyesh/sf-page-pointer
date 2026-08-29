@@ -1,0 +1,14 @@
+
+> page-pointer@1.1.1 test
+> vitest run
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/release-config.test.ts (4 tests) 5ms
+ ✓ tests/detection.test.ts (3 tests) 47ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  20:00:43
+   Duration  1.37s (transform 177ms, setup 0ms, collect 263ms, tests 52ms, environment 0ms, prepare 578ms)

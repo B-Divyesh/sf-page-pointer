@@ -1,0 +1,14 @@
+{
+  "restored": {
+    "status": "This license is not active. Check the token or buy the pack.",
+    "stored": "independent-invalid-license",
+    "verifyRequests": [
+      "https://api.sociobot.in/api/v1/products/page-pointer/verify?license=independent-invalid-license"
+    ]
+  },
+  "query": {
+    "url": "https://page-pointer.sociobot.in/",
+    "stored": "query-invalid-token",
+    "status": "License no longer active. You can purchase again below."
+  }
+}

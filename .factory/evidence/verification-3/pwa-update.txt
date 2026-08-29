@@ -1,0 +1,18 @@
+{
+  "origin": "http://127.0.0.1:35457",
+  "before": {
+    "controller": "activated",
+    "active": "activated"
+  },
+  "toastShown": true,
+  "waiting": "installed",
+  "after": {
+    "controller": "activated",
+    "active": "activated",
+    "caches": [
+      "page-pointer-v1.1.1-shell",
+      "page-pointer-v1.1.1-runtime"
+    ]
+  },
+  "errors": []
+}

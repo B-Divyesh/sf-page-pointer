@@ -1,0 +1,29 @@
+{
+  "exported": {
+    "version": 1,
+    "preferences": {
+      "mode": "word",
+      "guideColor": "#F7C948",
+      "thickness": 12
+    },
+    "sessions": [
+      {
+        "id": "f05ac67b-8614-49cc-9eca-c6656878133e",
+        "startedAt": "2026-08-29T20:10:07.309Z",
+        "durationSeconds": 3,
+        "source": "camera"
+      }
+    ],
+    "exportedAt": "2026-08-29T20:10:12.521Z"
+  },
+  "afterErase": [],
+  "afterImport": [
+    {
+      "id": "f05ac67b-8614-49cc-9eca-c6656878133e",
+      "startedAt": "2026-08-29T20:10:07.309Z",
+      "durationSeconds": 3,
+      "source": "camera"
+    }
+  ],
+  "status": "Local data imported."
+}

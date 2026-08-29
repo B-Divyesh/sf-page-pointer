@@ -1,0 +1,40 @@
+
+> page-pointer@1.1.1 test:e2e
+> npm run build && playwright test --grep @claim:demo-reset
+
+
+> page-pointer@1.1.1 build
+> tsc --noEmit && vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 10 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                                     1.70 kB │ gzip:  0.75 kB
+dist/assets/ibm-plex-mono-latin-500-normal-zoSM89R3.woff           13.20 kB
+dist/assets/atkinson-hyperlegible-latin-400-normal-DDbeQdWO.woff   14.07 kB
+dist/assets/atkinson-hyperlegible-latin-700-normal-CVvOgo6s.woff   14.26 kB
+dist/assets/ibm-plex-mono-latin-500-normal-C_OblDzq.woff2          14.99 kB
+dist/assets/atkinson-hyperlegible-latin-400-normal-BKTgBNmI.woff2  17.18 kB
+dist/assets/atkinson-hyperlegible-latin-700-normal-BriLmxM2.woff2  17.62 kB
+dist/assets/index-eJd9o7g4.css                                     19.36 kB │ gzip:  5.28 kB
+dist/assets/index-LeA982fC.js                                      30.60 kB │ gzip: 10.96 kB │ map: 69.07 kB
+✓ built in 367ms
+[WebServer] (node:994) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:1012) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1012) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [mobile-chromium] › tests/e2e/app.spec.ts:21:1 › @claim:demo-reset Reset demo discards its sample session and Start for real returns to real mode (6.1s)
+(node:1133) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1133) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [desktop-chromium] › tests/e2e/app.spec.ts:21:1 › @claim:demo-reset Reset demo discards its sample session and Start for real returns to real mode (5.6s)
+
+  2 passed (16.4s)

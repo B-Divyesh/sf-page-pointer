@@ -1,0 +1,110 @@
+{
+  "maxDuration": 24,
+  "interactionEvents": [
+    {
+      "name": "pointerdown",
+      "duration": 24,
+      "processingStart": 1151.1000000000931,
+      "startTime": 1150.4000000001397,
+      "interactionId": 8832
+    },
+    {
+      "name": "pointerup",
+      "duration": 24,
+      "processingStart": 1151.8000000000466,
+      "startTime": 1150.6000000000931,
+      "interactionId": 8832
+    },
+    {
+      "name": "click",
+      "duration": 24,
+      "processingStart": 1151.8000000000466,
+      "startTime": 1150.6000000000931,
+      "interactionId": 8832
+    },
+    {
+      "name": "pointerdown",
+      "duration": 16,
+      "processingStart": 1182.8000000000466,
+      "startTime": 1182.4000000001397,
+      "interactionId": 8839
+    },
+    {
+      "name": "pointerup",
+      "duration": 16,
+      "processingStart": 1183.1000000000931,
+      "startTime": 1182.6000000000931,
+      "interactionId": 8839
+    },
+    {
+      "name": "click",
+      "duration": 16,
+      "processingStart": 1183.1000000000931,
+      "startTime": 1182.6000000000931,
+      "interactionId": 8839
+    },
+    {
+      "name": "pointerdown",
+      "duration": 16,
+      "processingStart": 1215.6000000000931,
+      "startTime": 1215.2000000001863,
+      "interactionId": 8846
+    },
+    {
+      "name": "pointerup",
+      "duration": 16,
+      "processingStart": 1215.8000000000466,
+      "startTime": 1215.3000000000466,
+      "interactionId": 8846
+    },
+    {
+      "name": "click",
+      "duration": 16,
+      "processingStart": 1215.8000000000466,
+      "startTime": 1215.3000000000466,
+      "interactionId": 8846
+    },
+    {
+      "name": "pointerdown",
+      "duration": 16,
+      "processingStart": 1250.1000000000931,
+      "startTime": 1249.6000000000931,
+      "interactionId": 8853
+    },
+    {
+      "name": "pointerup",
+      "duration": 16,
+      "processingStart": 1250.4000000001397,
+      "startTime": 1249.6000000000931,
+      "interactionId": 8853
+    },
+    {
+      "name": "click",
+      "duration": 16,
+      "processingStart": 1250.4000000001397,
+      "startTime": 1249.6000000000931,
+      "interactionId": 8853
+    },
+    {
+      "name": "pointerdown",
+      "duration": 16,
+      "processingStart": 1282.4000000001397,
+      "startTime": 1282,
+      "interactionId": 8860
+    },
+    {
+      "name": "pointerup",
+      "duration": 16,
+      "processingStart": 1282.7000000001863,
+      "startTime": 1282.1000000000931,
+      "interactionId": 8860
+    },
+    {
+      "name": "click",
+      "duration": 16,
+      "processingStart": 1282.7000000001863,
+      "startTime": 1282.1000000000931,
+      "interactionId": 8860
+    }
+  ]
+}

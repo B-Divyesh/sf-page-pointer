@@ -1,0 +1,21 @@
+{
+  "online": {
+    "controller": "https://page-pointer.sociobot.in/sw.js",
+    "caches": [
+      "page-pointer-v1.1.1-shell"
+    ],
+    "registrations": [
+      {
+        "scope": "https://page-pointer.sociobot.in/",
+        "active": "activated"
+      }
+    ]
+  },
+  "offline": {
+    "before": "LINE 03 · WORD 04",
+    "after": "LINE 03 · WORD 05",
+    "privacy": true,
+    "errors": [],
+    "failed": []
+  }
+}

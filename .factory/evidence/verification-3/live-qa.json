@@ -1,0 +1,547 @@
+{
+  "generatedAt": "2026-08-29T20:06:17.492Z",
+  "base": "https://page-pointer.sociobot.in",
+  "viewports": {
+    "mobile-390": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "routes": [
+        {
+          "path": "/",
+          "status": 200,
+          "headers": {
+            "cache-control": "public, must-revalidate, max-age=30",
+            "content-encoding": "br",
+            "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://api.sociobot.in https://pilot-api.sociobot.in; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; form-action 'self'",
+            "content-type": "text/html",
+            "date": "Sat, 29 Aug 2026 20:06:17 GMT",
+            "etag": "\"40920631\"",
+            "last-modified": "Sat, 29 Aug 2026 19:48:35 GMT",
+            "permissions-policy": "camera=(self), geolocation=(), microphone=(), payment=(), browsing-topics=()",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+            "vary": "Accept-Encoding",
+            "x-content-type-options": "nosniff",
+            "x-dns-prefetch-control": "off",
+            "x-xss-protection": "1; mode=block"
+          },
+          "title": "Page Pointer — guide paper-book reading",
+          "lang": "en",
+          "h1": 1,
+          "h1Text": "Keep emerging readerson the right word.",
+          "main": 1,
+          "missingAlt": 0,
+          "horizontalOverflow": false,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "axeViolations": [],
+          "seriousCritical": 0,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "failedRequests": []
+        },
+        {
+          "path": "/demo",
+          "status": 200,
+          "headers": {
+            "cache-control": "public, must-revalidate, max-age=30",
+            "content-encoding": "br",
+            "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://api.sociobot.in https://pilot-api.sociobot.in; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; form-action 'self'",
+            "content-type": "text/html",
+            "date": "Sat, 29 Aug 2026 20:06:17 GMT",
+            "etag": "\"40920631\"",
+            "last-modified": "Sat, 29 Aug 2026 19:48:35 GMT",
+            "permissions-policy": "camera=(self), geolocation=(), microphone=(), payment=(), browsing-topics=()",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "vary": "Accept-Encoding",
+            "x-content-type-options": "nosniff",
+            "x-dns-prefetch-control": "off",
+            "x-xss-protection": "1; mode=block"
+          },
+          "title": "Demo — Page Pointer",
+          "lang": "en",
+          "h1": 1,
+          "h1Text": "Keep emerging readerson the right word.",
+          "main": 1,
+          "missingAlt": 0,
+          "horizontalOverflow": false,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "axeViolations": [],
+          "seriousCritical": 0,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "failedRequests": []
+        },
+        {
+          "path": "/privacy",
+          "status": 200,
+          "headers": {
+            "cache-control": "public, must-revalidate, max-age=30",
+            "content-encoding": "br",
+            "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://api.sociobot.in https://pilot-api.sociobot.in; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; form-action 'self'",
+            "content-type": "text/html",
+            "date": "Sat, 29 Aug 2026 20:06:17 GMT",
+            "etag": "\"40920631\"",
+            "last-modified": "Sat, 29 Aug 2026 19:48:35 GMT",
+            "permissions-policy": "camera=(self), geolocation=(), microphone=(), payment=(), browsing-topics=()",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "vary": "Accept-Encoding",
+            "x-content-type-options": "nosniff",
+            "x-dns-prefetch-control": "off",
+            "x-xss-protection": "1; mode=block"
+          },
+          "title": "Privacy — Page Pointer",
+          "lang": "en",
+          "h1": 1,
+          "h1Text": "How Page Pointer handles your data",
+          "main": 1,
+          "missingAlt": 0,
+          "horizontalOverflow": false,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "axeViolations": [],
+          "seriousCritical": 0,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "failedRequests": []
+        },
+        {
+          "path": "/terms",
+          "status": 200,
+          "headers": {
+            "cache-control": "public, must-revalidate, max-age=30",
+            "content-encoding": "br",
+            "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://api.sociobot.in https://pilot-api.sociobot.in; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; form-action 'self'",
+            "content-type": "text/html",
+            "date": "Sat, 29 Aug 2026 20:06:16 GMT",
+            "etag": "\"40920631\"",
+            "last-modified": "Sat, 29 Aug 2026 19:48:35 GMT",
+            "permissions-policy": "camera=(self), geolocation=(), microphone=(), payment=(), browsing-topics=()",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "vary": "Accept-Encoding",
+            "x-content-type-options": "nosniff",
+            "x-dns-prefetch-control": "off",
+            "x-xss-protection": "1; mode=block"
+          },
+          "title": "Terms — Page Pointer",
+          "lang": "en",
+          "h1": 1,
+          "h1Text": "Terms for using Page Pointer",
+          "main": 1,
+          "missingAlt": 0,
+          "horizontalOverflow": false,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "axeViolations": [],
+          "seriousCritical": 0,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "failedRequests": []
+        },
+        {
+          "path": "/not-a-real-page",
+          "status": 404,
+          "headers": {
+            "cache-control": "public, must-revalidate, max-age=30",
+            "content-length": "1062",
+            "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://api.sociobot.in https://pilot-api.sociobot.in; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; form-action 'self'",
+            "content-type": "text/html",
+            "date": "Sat, 29 Aug 2026 20:06:22 GMT",
+            "etag": "\"40920631\"",
+            "last-modified": "Sat, 29 Aug 2026 19:48:35 GMT",
+            "permissions-policy": "camera=(self), geolocation=(), microphone=(), payment=(), browsing-topics=()",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+            "x-content-type-options": "nosniff",
+            "x-dns-prefetch-control": "off",
+            "x-xss-protection": "1; mode=block"
+          },
+          "title": "Page not found — Page Pointer",
+          "lang": "en",
+          "h1": 1,
+          "h1Text": "This page is not here",
+          "main": 1,
+          "missingAlt": 0,
+          "horizontalOverflow": false,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "axeViolations": [],
+          "seriousCritical": 0,
+          "consoleErrors": [
+            "Failed to load resource: the server responded with a status of 404 ()"
+          ],
+          "pageErrors": [],
+          "failedRequests": []
+        }
+      ],
+      "firstScreen": {
+        "headline": "Keep emerging readerson the right word.",
+        "audience": "For parents, tutors, and emerging readers, it marks the current word on a physical book.",
+        "camera": "Open camera↗",
+        "demo": "Try it with sample data",
+        "actionNote": "Opens a practice page with a short sample story.",
+        "facts": [
+          "Frames stay on this device.",
+          "No account needed.",
+          "Works offline after its first visit."
+        ],
+        "headlineRect": {
+          "x": 35,
+          "y": 138.796875,
+          "width": 297,
+          "height": 123.46875,
+          "bottom": 262.265625
+        },
+        "demoRect": {
+          "x": 35,
+          "y": 463.609375,
+          "width": 339,
+          "height": 50.34375,
+          "bottom": 513.953125
+        },
+        "viewportHeight": 844
+      },
+      "firstScreenPass": true,
+      "focus": {
+        "text": "Skip to main content",
+        "tag": "A",
+        "outlineStyle": "solid",
+        "outlineWidth": "3px",
+        "outlineColor": "rgb(237, 152, 0)"
+      },
+      "outgoingOrigins": [
+        "https://page-pointer.sociobot.in"
+      ],
+      "targetsUnder44": [
+        {
+          "name": "import-data",
+          "tag": "INPUT",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "privacy",
+          "tag": "A",
+          "width": 43,
+          "height": 17
+        },
+        {
+          "name": "terms",
+          "tag": "A",
+          "width": 37,
+          "height": 17
+        }
+      ]
+    },
+    "desktop-1440": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "routes": [
+        {
+          "path": "/",
+          "status": 200,
+          "headers": {
+            "cache-control": "public, must-revalidate, max-age=30",
+            "content-encoding": "br",
+            "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://api.sociobot.in https://pilot-api.sociobot.in; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; form-action 'self'",
+            "content-type": "text/html",
+            "date": "Sat, 29 Aug 2026 20:06:25 GMT",
+            "etag": "\"40920631\"",
+            "last-modified": "Sat, 29 Aug 2026 19:48:35 GMT",
+            "permissions-policy": "camera=(self), geolocation=(), microphone=(), payment=(), browsing-topics=()",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+            "vary": "Accept-Encoding",
+            "x-content-type-options": "nosniff",
+            "x-dns-prefetch-control": "off",
+            "x-xss-protection": "1; mode=block"
+          },
+          "title": "Page Pointer — guide paper-book reading",
+          "lang": "en",
+          "h1": 1,
+          "h1Text": "Keep emerging readerson the right word.",
+          "main": 1,
+          "missingAlt": 0,
+          "horizontalOverflow": false,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "axeViolations": [],
+          "seriousCritical": 0,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "failedRequests": []
+        },
+        {
+          "path": "/demo",
+          "status": 200,
+          "headers": {
+            "cache-control": "public, must-revalidate, max-age=30",
+            "content-encoding": "br",
+            "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://api.sociobot.in https://pilot-api.sociobot.in; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; form-action 'self'",
+            "content-type": "text/html",
+            "date": "Sat, 29 Aug 2026 20:06:24 GMT",
+            "etag": "\"40920631\"",
+            "last-modified": "Sat, 29 Aug 2026 19:48:35 GMT",
+            "permissions-policy": "camera=(self), geolocation=(), microphone=(), payment=(), browsing-topics=()",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "vary": "Accept-Encoding",
+            "x-content-type-options": "nosniff",
+            "x-dns-prefetch-control": "off",
+            "x-xss-protection": "1; mode=block"
+          },
+          "title": "Demo — Page Pointer",
+          "lang": "en",
+          "h1": 1,
+          "h1Text": "Keep emerging readerson the right word.",
+          "main": 1,
+          "missingAlt": 0,
+          "horizontalOverflow": false,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "axeViolations": [],
+          "seriousCritical": 0,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "failedRequests": []
+        },
+        {
+          "path": "/privacy",
+          "status": 200,
+          "headers": {
+            "cache-control": "public, must-revalidate, max-age=30",
+            "content-encoding": "br",
+            "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://api.sociobot.in https://pilot-api.sociobot.in; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; form-action 'self'",
+            "content-type": "text/html",
+            "date": "Sat, 29 Aug 2026 20:06:25 GMT",
+            "etag": "\"40920631\"",
+            "last-modified": "Sat, 29 Aug 2026 19:48:35 GMT",
+            "permissions-policy": "camera=(self), geolocation=(), microphone=(), payment=(), browsing-topics=()",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "vary": "Accept-Encoding",
+            "x-content-type-options": "nosniff",
+            "x-dns-prefetch-control": "off",
+            "x-xss-protection": "1; mode=block"
+          },
+          "title": "Privacy — Page Pointer",
+          "lang": "en",
+          "h1": 1,
+          "h1Text": "How Page Pointer handles your data",
+          "main": 1,
+          "missingAlt": 0,
+          "horizontalOverflow": false,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "axeViolations": [],
+          "seriousCritical": 0,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "failedRequests": []
+        },
+        {
+          "path": "/terms",
+          "status": 200,
+          "headers": {
+            "cache-control": "public, must-revalidate, max-age=30",
+            "content-encoding": "br",
+            "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://api.sociobot.in https://pilot-api.sociobot.in; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; form-action 'self'",
+            "content-type": "text/html",
+            "date": "Sat, 29 Aug 2026 20:06:25 GMT",
+            "etag": "\"40920631\"",
+            "last-modified": "Sat, 29 Aug 2026 19:48:35 GMT",
+            "permissions-policy": "camera=(self), geolocation=(), microphone=(), payment=(), browsing-topics=()",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "vary": "Accept-Encoding",
+            "x-content-type-options": "nosniff",
+            "x-dns-prefetch-control": "off",
+            "x-xss-protection": "1; mode=block"
+          },
+          "title": "Terms — Page Pointer",
+          "lang": "en",
+          "h1": 1,
+          "h1Text": "Terms for using Page Pointer",
+          "main": 1,
+          "missingAlt": 0,
+          "horizontalOverflow": false,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "axeViolations": [],
+          "seriousCritical": 0,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "failedRequests": []
+        },
+        {
+          "path": "/not-a-real-page",
+          "status": 404,
+          "headers": {
+            "cache-control": "public, must-revalidate, max-age=30",
+            "content-length": "1062",
+            "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://api.sociobot.in https://pilot-api.sociobot.in; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; form-action 'self'",
+            "content-type": "text/html",
+            "date": "Sat, 29 Aug 2026 20:06:29 GMT",
+            "etag": "\"40920631\"",
+            "last-modified": "Sat, 29 Aug 2026 19:48:35 GMT",
+            "permissions-policy": "camera=(self), geolocation=(), microphone=(), payment=(), browsing-topics=()",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+            "x-content-type-options": "nosniff",
+            "x-dns-prefetch-control": "off",
+            "x-xss-protection": "1; mode=block"
+          },
+          "title": "Page not found — Page Pointer",
+          "lang": "en",
+          "h1": 1,
+          "h1Text": "This page is not here",
+          "main": 1,
+          "missingAlt": 0,
+          "horizontalOverflow": false,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "axeViolations": [],
+          "seriousCritical": 0,
+          "consoleErrors": [
+            "Failed to load resource: the server responded with a status of 404 ()"
+          ],
+          "pageErrors": [],
+          "failedRequests": []
+        }
+      ],
+      "firstScreen": {
+        "headline": "Keep emerging readerson the right word.",
+        "audience": "For parents, tutors, and emerging readers, it marks the current word on a physical book.",
+        "camera": "Open camera↗",
+        "demo": "Try it with sample data",
+        "actionNote": "Opens a practice page with a short sample story.",
+        "facts": [
+          "Frames stay on this device.",
+          "No account needed.",
+          "Works offline after its first visit."
+        ],
+        "headlineRect": {
+          "x": 163,
+          "y": 178.796875,
+          "width": 411.4375,
+          "height": 333.125,
+          "bottom": 511.921875
+        },
+        "demoRect": {
+          "x": 355.25,
+          "y": 629.921875,
+          "width": 218,
+          "height": 50.34375,
+          "bottom": 680.265625
+        },
+        "viewportHeight": 900
+      },
+      "firstScreenPass": true,
+      "focus": {
+        "text": "Skip to main content",
+        "tag": "A",
+        "outlineStyle": "solid",
+        "outlineWidth": "3px",
+        "outlineColor": "rgb(237, 152, 0)"
+      },
+      "outgoingOrigins": [
+        "https://page-pointer.sociobot.in"
+      ],
+      "targetsUnder44": [
+        {
+          "name": "import-data",
+          "tag": "INPUT",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "privacy",
+          "tag": "A",
+          "width": 43,
+          "height": 17
+        },
+        {
+          "name": "terms",
+          "tag": "A",
+          "width": 37,
+          "height": 17
+        }
+      ]
+    }
+  },
+  "demoFlow": {
+    "initial": "LINE 03 · WORD 04",
+    "afterNext": "LINE 03 · WORD 05",
+    "afterPrevious": "LINE 03 · WORD 04",
+    "afterArrow": "LINE 03 · WORD 05",
+    "afterSpace": "LINE 03 · WORD 06",
+    "lineMode": {
+      "pressed": "true",
+      "status": "Line guide placed.Use Next when the reader moves.",
+      "guideWidth": 43.328125
+    },
+    "endState": "End of detected text.Turn the page or tap the next line.",
+    "exported": {
+      "version": 1,
+      "preferences": {
+        "mode": "line",
+        "guideColor": "#F7C948",
+        "thickness": 12
+      },
+      "sessions": [
+        {
+          "id": "846fa870-ac2d-4554-a24d-4a2d1f8bc8e6",
+          "startedAt": "2026-08-29T20:06:32.819Z",
+          "durationSeconds": 6,
+          "source": "demo"
+        }
+      ],
+      "exportedAt": "2026-08-29T20:06:40.496Z"
+    },
+    "exportedContainsPageContent": false,
+    "invalidImport": "This is not a Page Pointer export.",
+    "storageBeforeReset": {
+      "databases": [
+        "demo:page-pointer"
+      ],
+      "localStorageKeys": []
+    },
+    "sessionsAfterReset": [],
+    "storageAfterReal": {
+      "databases": [
+        "page-pointer"
+      ],
+      "banner": false
+    },
+    "outgoingOrigins": [
+      "https://page-pointer.sociobot.in"
+    ],
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  "camera": {
+    "denied": "Camera access is off. Allow it in your browser’s site settings, then try again—or try the sample guide.",
+    "fake": {
+      "beforeClose": {
+        "hidden": false,
+        "readyState": 4,
+        "trackStates": [
+          "live"
+        ]
+      },
+      "afterClose": {
+        "hidden": false,
+        "srcObject": null
+      },
+      "errors": []
+    }
+  },
+  "reducedMotion": {
+    "matches": true,
+    "scrollBehavior": "auto",
+    "focusTransitionDuration": "1e-05s",
+    "animatedElements": 0
+  }
+}

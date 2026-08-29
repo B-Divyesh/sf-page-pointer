@@ -1,0 +1,37 @@
+{
+  "origins": [
+    "https://page-pointer.sociobot.in"
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "url": "https://page-pointer.sociobot.in/",
+      "resourceType": "document"
+    },
+    {
+      "method": "GET",
+      "url": "https://page-pointer.sociobot.in/assets/atkinson-hyperlegible-latin-400-normal-BKTgBNmI.woff2",
+      "resourceType": "font"
+    },
+    {
+      "method": "GET",
+      "url": "https://page-pointer.sociobot.in/assets/atkinson-hyperlegible-latin-700-normal-BriLmxM2.woff2",
+      "resourceType": "font"
+    },
+    {
+      "method": "GET",
+      "url": "https://page-pointer.sociobot.in/assets/ibm-plex-mono-latin-500-normal-C_OblDzq.woff2",
+      "resourceType": "font"
+    },
+    {
+      "method": "GET",
+      "url": "https://page-pointer.sociobot.in/assets/mark.svg",
+      "resourceType": "image"
+    },
+    {
+      "method": "GET",
+      "url": "https://page-pointer.sociobot.in/assets/page-pointer-hero-768.avif",
+      "resourceType": "image"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+HTTP/2 200
+content-type: font/woff2
+date: Sat, 29 Aug 2026 20:07:03 GMT
+cache-control: public, max-age=31536000, immutable
+etag: "40920631"
+last-modified: Sat, 29 Aug 2026 19:48:35 GMT
+content-length: 17184
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-dns-prefetch-control: off
+permissions-policy: camera=(self), geolocation=(), microphone=(), payment=(), browsing-topics=()
+content-security-policy: default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://api.sociobot.in https://pilot-api.sociobot.in; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; form-action 'self'
