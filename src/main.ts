@@ -52,7 +52,7 @@ function renderLegal(route: string): void {
       `}
       <p><a class="text-link" href="/">← Return to Page Pointer</a></p>
     </main>
-    <footer><div class="footer-brand">Page Pointer</div><p>A reading guide for shared paper books.</p><nav aria-label="Legal"><a href="/demo">Demo</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav><p class="generated-note">Built by Param Factory · v1.1.0</p></footer>`;
+    <footer><div class="footer-brand">Page Pointer</div><p>A reading guide for shared paper books.</p><nav aria-label="Legal"><a href="/demo">Demo</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav><p class="generated-note">Built by Param Factory · v1.1.1</p></footer>`;
 }
 
 function renderHome(): void {
@@ -150,7 +150,7 @@ function renderHome(): void {
       </section>
     </main>
     <div class="toast" id="update-toast" role="status" hidden><span>A fresh sheet is ready.</span><button type="button" id="update-button">Update</button></div>
-    <footer><div class="brand footer-brand"><img src="/assets/mark.svg" alt="" width="32" height="32"><span>Page Pointer</span></div><p>A reading guide for shared paper books.</p><nav aria-label="Legal"><a href="/demo">Demo</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav><p class="generated-note">Built by Param Factory · v1.1.0 · original hero artwork</p></footer>`;
+    <footer><div class="brand footer-brand"><img src="/assets/mark.svg" alt="" width="32" height="32"><span>Page Pointer</span></div><p>A reading guide for shared paper books.</p><nav aria-label="Legal"><a href="/demo">Demo</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav><p class="generated-note">Built by Param Factory · v1.1.1 · original hero artwork</p></footer>`;
   void initialiseHome();
 }
 
@@ -290,11 +290,11 @@ async function initialiseHome(): Promise<void> {
     drawGuide();
   }
 
-  function startWorkspace(nextSource: 'camera' | 'demo'): void {
+  function startWorkspace(nextSource: 'camera' | 'demo', scrollBehavior: ScrollBehavior = 'smooth'): void {
     source = nextSource;
     sessionStarted = Date.now();
     instrument.hidden = false;
-    instrument.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    instrument.scrollIntoView({ behavior: scrollBehavior, block: 'start' });
     video.hidden = nextSource !== 'camera';
     demo.hidden = nextSource !== 'demo';
     sourceLabel.textContent = nextSource === 'camera' ? 'CAM 01 · REAR' : 'DEMO SHEET · LOCAL';
@@ -446,6 +446,7 @@ async function initialiseHome(): Promise<void> {
   installButton.addEventListener('click', async () => { if (!installPrompt) return; await installPrompt.prompt(); const choice = await installPrompt.userChoice; if (choice.outcome === 'accepted') installButton.hidden = true; installPrompt = null; });
 
   const updateNetwork = () => {
+    document.documentElement.classList.toggle('is-offline', !navigator.onLine);
     const node = byId<HTMLSpanElement>('network-state');
     node.classList.toggle('is-offline', !navigator.onLine);
     const label = node.querySelector('span');
@@ -465,7 +466,13 @@ async function initialiseHome(): Promise<void> {
       try { await resetDemoData(); location.assign('/'); }
       catch (error) { button.disabled = false; guideStatus.textContent = error instanceof Error ? error.message : 'The demo could not close. Reload and try again.'; }
     });
-    requestAnimationFrame(() => { startWorkspace('demo'); document.body.focus({ preventScroll: true }); });
+    // An automatic smooth scroll changes Chromium's sequential focus starting
+    // point while the first Tab can already be pressed. Finish the initial
+    // positioning synchronously, then reset the starting point to the document.
+    requestAnimationFrame(() => {
+      startWorkspace('demo', 'auto');
+      document.body.focus({ preventScroll: true });
+    });
   }
   registerServiceWorker();
 }

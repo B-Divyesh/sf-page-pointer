@@ -76,17 +76,20 @@ test('@claim:offline-demo the sample guide works offline after the first visit',
   await page.goto('/?demo=1');
   await page.evaluate(async () => { await navigator.serviceWorker.ready; });
   await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
-  await page.waitForFunction(async () => (await caches.keys()).some((key) => key.includes('page-pointer-v1.1.0-shell')));
-  const cachedShell = await page.evaluate(async () => {
-    const resources = [...document.querySelectorAll<HTMLLinkElement | HTMLScriptElement>('link[rel="stylesheet"], script[type="module"]')]
-      .map((node) => node.getAttribute('href') ?? node.getAttribute('src'))
-      .filter((url): url is string => Boolean(url));
-    return Promise.all(resources.map(async (url) => Boolean(await caches.match(url))));
-  });
-  expect(cachedShell).toEqual(cachedShell.map(() => true));
+  await page.waitForFunction(async () => (await caches.keys()).some((key) => key.includes('page-pointer-v1.1.1-shell')));
+  await page.evaluate(async () => { await document.fonts.ready; });
+  expect(await page.evaluate(() => document.fonts.size)).toBe(3);
+  expect(await page.evaluate(() => [...document.fonts].every((font) => font.status === 'loaded'))).toBe(true);
+  // Let Chromium deliver any final online resource events before the test
+  // starts attributing failures to the offline reload.
+  await page.waitForTimeout(250);
+  expect([consoleErrors, failedRequests]).toEqual([[], []]);
+  consoleErrors.length = 0;
+  failedRequests.length = 0;
   await context.setOffline(true);
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(100);
+  expect(await page.evaluate(() => document.documentElement.classList.contains('is-offline'))).toBe(true);
+  expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily)).toContain('system-ui');
   expect([consoleErrors, failedRequests]).toEqual([[], []]);
   await expect(page.getByRole('complementary', { name: 'Demo controls' })).toBeVisible();
   await expect(page.locator('#focus-guide')).toHaveClass(/is-visible/);
@@ -105,9 +108,13 @@ test('@claim:free-guide-and-price parents and tutors can try the complete core g
 });
 
 test('keyboard users can reach the skip link and advance the sample guide', async ({ page }) => {
-  await page.goto('/demo');
+  await page.goto('/demo', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#focus-guide')).toHaveClass(/is-visible/);
   await page.keyboard.press('Tab');
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused();
+  const skipLink = page.getByRole('link', { name: 'Skip to main content' });
+  await expect(skipLink).toBeFocused();
+  await page.waitForTimeout(300);
+  await expect(skipLink).toBeFocused();
   await page.locator('#viewfinder').focus();
   const before = await page.locator('#coordinate-label').textContent();
   await page.keyboard.press('ArrowRight');
@@ -119,11 +126,21 @@ test('keyboard users can reach the skip link and advance the sample guide', asyn
 
 test('home, demo, legal pages, and the static 404 have no serious accessibility regressions', async ({ page }) => {
   for (const path of ['/', '/demo', '/privacy', '/terms', '/404.html']) {
+    const consoleErrors: string[] = [];
+    const pageErrors: string[] = [];
+    const onConsole = (message: { type(): string; text(): string }) => { if (message.type() === 'error') consoleErrors.push(message.text()); };
+    const onPageError = (error: Error) => pageErrors.push(error.message);
+    page.on('console', onConsole);
+    page.on('pageerror', onPageError);
     await page.goto(path);
     const results = await new AxeBuilder({ page }).analyze();
     const serious = results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''));
     expect(serious, `${path}: ${serious.map((item) => item.id).join(', ')}`).toEqual([]);
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('main')).toHaveCount(1);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+    expect([consoleErrors, pageErrors]).toEqual([[], []]);
+    page.off('console', onConsole);
+    page.off('pageerror', onPageError);
   }
 });

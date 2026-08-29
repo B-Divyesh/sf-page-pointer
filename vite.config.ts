@@ -12,6 +12,12 @@ export default defineConfig({
     closeBundle() {
       const indexPath = resolve('dist', 'index.html');
       let index = readFileSync(indexPath, 'utf8');
+      const assetFiles = readdirSync(resolve('dist', 'assets'));
+      const fontPreloads = assetFiles
+        .filter((file) => file.endsWith('.woff2'))
+        .map((file) => `    <link rel="preload" href="/assets/${file}" as="font" type="font/woff2" crossorigin />`)
+        .join('\n');
+      index = index.replace('    <meta property="og:title"', `${fontPreloads}\n    <meta property="og:title"`);
       // Keep the app shell self-contained for a controlled offline reload. The
       // hashed files remain available for normal cacheable delivery as well.
       index = index.replace(/<script type="module" crossorigin src="([^"]+)"><\/script>/, (_match, source: string) => {
@@ -28,7 +34,7 @@ export default defineConfig({
         mkdirSync(folder, { recursive: true });
         copyFileSync(indexPath, resolve(folder, 'index.html'));
       }
-      const builtAssets = readdirSync(resolve('dist', 'assets'))
+      const builtAssets = assetFiles
         .filter((file) => !file.endsWith('.map') && !/^(icon-|mark\.|page-pointer-)/.test(file))
         .map((file) => `/assets/${file}`);
       const workerPath = resolve('dist', 'sw.js');

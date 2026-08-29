@@ -10,6 +10,7 @@ test('static deployment keeps security, immutable asset caching, manifest type, 
     responseOverrides: Record<string, { rewrite: string; statusCode: number }>;
   };
   expect(config.globalHeaders['Content-Security-Policy']).toContain("frame-ancestors 'none'");
+  expect(config.globalHeaders['Content-Security-Policy']).toContain("font-src 'self'");
   expect(config.globalHeaders['Permissions-Policy']).toContain('camera=(self)');
   expect(config.globalHeaders['Referrer-Policy']).toBe('strict-origin-when-cross-origin');
   expect(config.globalHeaders['X-Content-Type-Options']).toBe('nosniff');
@@ -20,4 +21,26 @@ test('static deployment keeps security, immutable asset caching, manifest type, 
   const notFound = readFileSync(resolve('public/404.html'), 'utf8');
   expect(notFound).toContain('<main id="main">');
   expect(notFound).toContain('<h1>This page is not here</h1>');
+});
+
+test('the browser suite builds its production server from a clean clone', () => {
+  const packageJson = JSON.parse(readFileSync(resolve('package.json'), 'utf8')) as {
+    scripts: Record<string, string>;
+  };
+  expect(packageJson.scripts['test:e2e']).toBe('npm run build && playwright test');
+});
+
+test('the service worker precaches build assets and supports an in-app update', () => {
+  const worker = readFileSync(resolve('public/sw.js'), 'utf8');
+  expect(worker).toContain('/* BUILD_ASSETS */');
+  expect(worker).toContain("event.data?.type === 'SKIP_WAITING'");
+  expect(worker).toContain('self.skipWaiting()');
+  expect(worker).toContain('self.clients.claim()');
+  expect(worker).toContain("caches.match(event.request, { ignoreVary: true })");
+});
+
+test('the production build preloads its self-hosted WOFF2 fonts', () => {
+  const viteConfig = readFileSync(resolve('vite.config.ts'), 'utf8');
+  expect(viteConfig).toContain("file.endsWith('.woff2')");
+  expect(viteConfig).toContain('as="font" type="font/woff2" crossorigin');
 });
