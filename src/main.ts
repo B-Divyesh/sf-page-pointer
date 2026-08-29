@@ -50,7 +50,7 @@ function renderLegal(route: string): void {
   const privacy = route === '/privacy';
   app.innerHTML = `
     <header class="site-header compact"><a class="brand" href="/" aria-label="Page Pointer home"><img src="/assets/mark.svg" alt="" width="36" height="36"><span>Page Pointer</span></a><nav class="site-nav" aria-label="Primary"><a href="/demo">Demo</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav></header>
-    <main id="main" class="legal-page">
+    <main id="main" class="legal-page" tabindex="-1">
       <p class="eyebrow">${privacy ? 'Privacy' : 'Terms'} · effective 28 August 2026</p>
       <h1>${privacy ? 'How Page Pointer handles your data' : 'Terms for using Page Pointer'}</h1>
       ${privacy ? `
@@ -81,7 +81,7 @@ function renderHome(): void {
       <div class="header-tools"><span class="network-state" id="network-state"><i aria-hidden="true"></i><span>Checking…</span></span><button class="quiet-button" id="install-button" type="button" hidden>Install app</button></div>
     </header>
     ${isDemo ? '<aside class="demo-banner" aria-label="Demo controls"><strong>Demo — sample data, nothing is saved</strong><span>Try the guide without using your reading data.</span><button class="quiet-button" id="reset-demo" type="button">Reset demo</button><button class="quiet-button" id="start-real" type="button">Start for real</button></aside>' : ''}
-    <main id="main">
+    <main id="main" tabindex="-1">
       <section class="hero" id="top">
         <div class="hero-copy">
           <p class="eyebrow">Camera reading guide</p>

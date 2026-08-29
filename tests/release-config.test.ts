@@ -20,7 +20,7 @@ test('static deployment keeps security, immutable asset caching, manifest type, 
   expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html', statusCode: 404 });
   const notFound = readFileSync(resolve('public/404.html'), 'utf8');
   expect(notFound).toContain('class="skip-link"');
-  expect(notFound).toContain('<main id="main">');
+  expect(notFound).toContain('<main id="main" tabindex="-1">');
   expect(notFound).toContain('<h1>This page is not here</h1>');
   expect(notFound).toContain('href="/privacy"');
   expect(notFound).toContain('href="/terms"');

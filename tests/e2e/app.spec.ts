@@ -127,6 +127,8 @@ test('keyboard users can reach the skip link and advance the sample guide', asyn
   await expect(skipLink).toBeFocused();
   await page.waitForTimeout(300);
   await expect(skipLink).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#main')).toBeFocused();
   await page.locator('#viewfinder').focus();
   const before = await page.locator('#coordinate-label').textContent();
   await page.keyboard.press('ArrowRight');
