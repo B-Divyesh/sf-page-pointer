@@ -22,9 +22,13 @@ test('static deployment keeps security, immutable asset caching, manifest type, 
   expect(notFound).toContain('class="skip-link"');
   expect(notFound).toContain('<main id="main" tabindex="-1">');
   expect(notFound).toContain('<h1>This page is not here</h1>');
+  expect(notFound).toContain('rel="canonical" href="https://page-pointer.sociobot.in/404.html"');
+  expect(notFound).toContain('rel="apple-touch-icon"');
+  expect(notFound).toContain('property="og:image"');
+  expect(notFound).toContain('name="twitter:card"');
   expect(notFound).toContain('href="/privacy"');
   expect(notFound).toContain('href="/terms"');
-  expect(notFound).toContain('v1.1.2');
+  expect(notFound).toContain('v1.1.3');
 });
 
 test('social metadata uses an exact 1200 by 630 product image and complete Twitter fields', () => {
@@ -69,7 +73,8 @@ test('every declared claim has exactly one tagged regression and required behavi
   const ids = claims.map((claim) => claim.id);
   expect(new Set(ids).size).toBe(ids.length);
   expect(ids).toEqual(expect.arrayContaining([
-    'camera-states', 'local-ink-detection', 'local-data-roundtrip', 'pwa-update', 'paid-supporter'
+    'camera-states', 'local-ink-detection', 'local-data-roundtrip', 'pwa-update', 'paid-supporter',
+    'license-cache-24h', 'private-runtime'
   ]));
   const testSources = [
     'tests/detection.test.ts', 'tests/e2e/app.spec.ts', 'tests/e2e/product-claims.spec.ts'
@@ -78,6 +83,13 @@ test('every declared claim has exactly one tagged regression and required behavi
     expect(claim.test).toContain(`@claim:${claim.id}`);
     expect(testSources.match(new RegExp(`@claim:${claim.id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'g')) ?? []).toHaveLength(1);
   }
+});
+
+test('catalog description is verb-first and no more than 120 characters', () => {
+  const description = readFileSync(resolve('.factory/catalog-description.txt'), 'utf8').trim();
+  expect(description.length).toBeLessThanOrEqual(120);
+  expect(description).toMatch(/^(Keep|Guide|Mark|Follow|Help)\b/);
+  expect(description.split(/\r?\n/)).toHaveLength(1);
 });
 
 test('billing documentation and live verifier pin the one-time INR 249 production and pilot mappings', () => {

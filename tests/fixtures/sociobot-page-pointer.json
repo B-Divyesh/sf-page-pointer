@@ -1,0 +1,15 @@
+{
+  "recorded_at": "2026-08-29T00:00:00Z",
+  "product": {
+    "slug": "page-pointer",
+    "currency": "INR",
+    "price_minor": 24900,
+    "billing_type": "one_time"
+  },
+  "checkout": {
+    "production_url": "https://api.sociobot.in/api/v1/products/page-pointer/checkout",
+    "pilot_url": "https://pilot-api.sociobot.in/api/v1/products/page-pointer/checkout",
+    "status": 303,
+    "provider": "Sociobot hosted checkout"
+  }
+}

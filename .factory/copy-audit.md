@@ -13,7 +13,7 @@ counted by whitespace. Hyphenated terms count as one word.
 | Try the guide without using your reading data. | 8 | Pass |
 | Keep emerging readers on the right word. | 7 | Pass |
 | For parents, tutors, and emerging readers, it marks the current word on a physical book. | 15 | Pass |
-| Opens a practice page with a short sample story. | 9 | Pass |
+| Opens the sample guide with a short story. | 8 | Pass |
 | Frames stay on this device. | 6 | Pass |
 | No account needed. | 3 | Pass |
 | Works offline after its first visit. | 7 | Pass |
@@ -33,18 +33,17 @@ counted by whitespace. Hyphenated terms count as one word.
 | Page Pointer finds the nearest ink line—without reading it. | 9 | Pass |
 | Use Next or the arrow keys to travel word by word. | 11 | Pass |
 | Switch to a full-line guide anytime. | 6 | Pass |
-| V1 is designed for printed Latin-script text. | 7 | Pass |
+| This version works with printed text that uses the Latin alphabet. | 11 | Pass |
 | Curved pages, glare, illustrations, or unusual layouts can confuse placement. | 10 | Pass |
 | Tap again or use Previous and Next. | 7 | Pass |
-| Line detection uses temporary pixels inside this browser. | 8 | Pass |
-| It creates no photos, transcripts, child profiles, scores, trackers, or cloud OCR. | 12 | Pass |
+| The app checks each camera frame in memory, then discards it. | 10 | Pass |
+| It never reads, uploads, or stores the book’s words. | 9 | Pass |
 | Preferences and brief session summaries stay in this browser. | 9 | Pass |
 | Export, import, or erase them whenever you like. | 8 | Pass |
 | The complete reading guide stays free. | 6 | Pass |
 | One purchase adds saved guide colors and a quiet ten-minute session timer. | 12 | Pass |
-| Sociobot/Dodo handles payment and refunds. | 5 | Pass |
-| A refund revokes the license. | 5 | Pass |
-| No account required. | 3 | Pass |
+| Checkout opens on Sociobot. | 4 | Pass |
+| No account needed. | 3 | Pass |
 | An app update is ready. | 5 | Pass |
 | A reading guide for shared physical books. | 7 | Pass |
 
@@ -102,14 +101,16 @@ counted by whitespace. Hyphenated terms count as one word.
 
 These fragments are direct names or states, not marketing sentences: **Camera
 reading guide**, **Open camera**, **Try it with sample data**, **Setup**,
-**Place the guide**, **Close guide**, **Rear camera**, **Sample page · local**,
+**Place the guide**, **Close guide**, **Rear camera**, **Sample guide · local**,
 **Frame stays local**, **Word**, **Line**, **Previous**, **Next**, **Supporter
 pack**, **Saved guide color**, **Start quiet 10-minute timer**, **How it
-works**, **Three steps**, **Aim**, **Tap**, **Follow**, **Limits**, **Local
+works**, **Three steps**, **Aim the rear camera**, **Tap the current word**,
+**Follow with Next**, **Limits**, **Local
 data**, **Local data settings**, **Export JSON**, **Import JSON**, **Erase
 local data**, **Optional Supporter pack · one-time**, **Privacy**, **Terms**,
-**Buy once · ₹249**, **Restore**, **Ready offline**, **Offline · guide ready**,
-**Install app**, and coordinate/timer readouts.
+**Buy once for ₹249 on Sociobot (opens checkout)**, **Restore Supporter pack**, **Ready offline**,
+**Offline · guide ready**, **Install app**, **Install update**, and
+coordinate/timer readouts.
 
 No audited sentence exceeds 22 words. None uses the banned marketing words.
 The first screen states the job, audience, first action, demo result, privacy,

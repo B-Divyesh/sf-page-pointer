@@ -1,21 +1,21 @@
 # Page Pointer
 
-Page Pointer helps parents, tutors, and emerging readers follow the current word in a physical book. Aim a phone at the page and tap the current word. A high-contrast guide marks one word or line. Pixel analysis stays in memory on the device. The app creates no OCR record, image upload, child profile, or reading assessment.
+Page Pointer helps parents, tutors, and emerging readers follow the current word in a physical book. Aim a phone at the page and tap the current word. A high-contrast guide marks one word or line. The app checks each camera frame in memory, then discards it. It never reads, uploads, or stores the book’s words.
 
 Live product: <https://page-pointer.sociobot.in>
 
 Try the isolated sample guide at <https://page-pointer.sociobot.in/demo>. It
-opens with *The Small Red Kite*, stores only in `demo:page-pointer`, and lets
-you reset the sample or discard it before starting for real.
+opens *The Small Red Kite* and stores data only in `demo:page-pointer`. Reset
+it or discard it before starting for real.
 
-## What v1 includes
+## What this version includes
 
-- Rear-camera capture with clear permission, denial, no-camera, and low-contrast states.
-- Local line and word-gap detection from contrasting pixels. It does not read the text.
-- Tap-to-orient, word/line modes, Previous/Next controls, and Arrow/Space keyboard controls.
-- A built-in practice page that works without camera permission.
-- Installable PWA with first-visit precaching, offline navigation, and an update action.
-- IndexedDB preferences and up to 50 brief session summaries, with JSON import, export, and erasure.
+- The app explains how to recover when camera permission is denied, no camera is available, or page contrast is low.
+- The app finds printed lines and word spaces on your device. It does not read the text.
+- Tap the current word, choose a word or line guide, or move it with Next, Previous, Arrow, and Space.
+- The sample guide works without camera permission.
+- Install the web app, use both guides offline after one visit, and install updates when prompted.
+- Save preferences and 50 brief session summaries in this browser. Import, export, or erase them as JSON.
 - Optional ₹249 one-time Supporter pack through Sociobot billing; the complete reading guide stays free.
 
 ## Run and verify
@@ -44,20 +44,19 @@ Every visitor-facing claim is listed in [`.factory/claims.json`](.factory/claims
 with an executable Playwright regression. The sandbox behavior and storage
 namespace are documented in [`.factory/demo.md`](.factory/demo.md).
 
-Production and test checkout mapping, the one-check-per-day client cache, and
-the observed API request allowance are documented in
-[`.factory/billing.md`](.factory/billing.md). Run `npm run test:billing` to
-confirm both ₹249 checkout mappings against the live Sociobot catalogues.
+`.factory/billing.md` records both checkout environments, the daily license
+check, and the measured request limit. Run `npm run test:billing` to confirm
+both ₹249 checkout mappings against the live Sociobot catalogues.
 
 ## Architecture and privacy
 
-The app is Vite with strict vanilla TypeScript. `src/detection.ts` converts each temporary canvas frame to grayscale. It estimates ink rows and groups local gaps into word-like rectangles. It does not recognize or retain text. IndexedDB stores only preferences and up to 50 session summaries. A supplied license stays in localStorage. Automatic checks use the cached result for 24 hours.
+The app uses Vite and TypeScript without a UI framework. `src/detection.ts` removes color from each in-memory camera frame before checking page contrast. It groups dark marks into printed lines and approximate word boxes. It does not recognize or retain text. IndexedDB stores only preferences and up to 50 session summaries. A supplied license stays in this browser’s local storage. Automatic license checks reuse a result for 24 hours.
 
-The app contains no analytics, third-party runtime scripts, CDN fonts, or payment widgets. Atkinson Hyperlegible and IBM Plex Mono are bundled under their open licenses.
+The app loads no tracking, third-party code, remote fonts, or embedded checkout. Atkinson Hyperlegible and IBM Plex Mono are bundled under their open licenses.
 
 ## Known limits
 
-V1 is designed for well-lit, horizontal, printed Latin-script pages. Curvature, glare, columns, illustrations, handwriting, vertical text, and decorative layouts can reduce placement quality. Users can tap again or use the step controls. Page Pointer does not diagnose or treat dyslexia.
+This version works with well-lit, horizontal, printed text that uses the Latin alphabet. Curvature, glare, columns, illustrations, handwriting, vertical text, and decorative layouts can reduce placement quality. Users can tap again or use the step controls. Page Pointer does not diagnose or treat dyslexia.
 
 Visual direction and asset provenance are in [`.factory/design.md`](.factory/design.md). Build verification and remaining product validation are in [`.factory/handoff.md`](.factory/handoff.md).
 

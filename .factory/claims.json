@@ -43,10 +43,10 @@
   },
   {
     "id": "offline-demo",
-    "claim": "The sample guide and its local fonts work offline after the first visit.",
+    "claim": "The camera guide and sample guide work offline after the first visit.",
     "where": "landing facts, network state, README",
     "test": "npm run test:e2e -- --grep @claim:offline-demo",
-    "sandbox": "fresh /demo context waits for the service worker and fonts, goes offline, reloads without failed requests, and moves the guide"
+    "sandbox": "new isolated browser context visits once, goes offline, reloads the real guide with a fake rear camera, exercises its controls, then opens and moves the sample guide"
   },
   {
     "id": "pwa-update",
@@ -60,13 +60,27 @@
     "claim": "Parents and tutors can use the complete reading guide without an account.",
     "where": "landing facts, Supporter section, Terms, README",
     "test": "npm run test:e2e -- --grep @claim:free-core",
-    "sandbox": "fresh context opens the working sample guide without sign-in or a license"
+    "sandbox": "fresh unauthenticated real context opens the fake rear camera, places and moves the guide, changes mode, and confirms no sign-in or license gate"
   },
   {
     "id": "paid-supporter",
     "claim": "The optional Supporter pack costs ₹249 once and adds saved guide colors plus a quiet ten-minute timer.",
     "where": "Supporter section, Terms, README",
     "test": "npm run test:e2e -- --grep @claim:paid-supporter",
-    "sandbox": "fresh demo-to-real context uses recorded valid and revoked Sociobot verification responses; it checks token capture, restore, locking, saved color, timer completion, and the exact checkout URL"
+    "sandbox": "fresh real context asserts a recorded INR 249 one-time catalogue and checkout fixture, then checks purchase, restore, locking, saved color, timer completion, and the exact checkout URL"
+  },
+  {
+    "id": "license-cache-24h",
+    "claim": "Automatic license checks reuse a result for 24 hours.",
+    "where": "README and billing documentation",
+    "test": "npm run test:e2e -- --grep @claim:license-cache-24h",
+    "sandbox": "controlled browser clock verifies one check at restore, no new check before 24 hours, and a new check after 24 hours"
+  },
+  {
+    "id": "private-runtime",
+    "claim": "The app loads no tracking, third-party code, remote fonts, or embedded checkout.",
+    "where": "Privacy page and README",
+    "test": "npm run test:e2e -- --grep @claim:private-runtime",
+    "sandbox": "fresh demo flow records every request and inspects loaded scripts, fonts, frames, and storage for outside runtime content"
   }
 ]

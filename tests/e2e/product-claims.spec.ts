@@ -115,6 +115,12 @@ test('@claim:local-data-roundtrip real data imports, exports at a 50-session cap
 });
 
 test('@claim:paid-supporter a purchase or restore activates saved colors and the ten-minute timer, while revocation locks them', async ({ page, context }) => {
+  const billingFixture = JSON.parse(await readFile(resolve('tests/fixtures/sociobot-page-pointer.json'), 'utf8')) as {
+    product: { currency: string; price_minor: number; billing_type: string };
+    checkout: { pilot_url: string; status: number; provider: string };
+  };
+  expect(billingFixture.product).toMatchObject({ currency: 'INR', price_minor: 24900, billing_type: 'one_time' });
+  expect(billingFixture.checkout).toMatchObject({ status: 303, provider: 'Sociobot hosted checkout' });
   const verifiedTokens: string[] = [];
   await page.route('https://pilot-api.sociobot.in/api/v1/products/page-pointer/verify?*', async (route) => {
     const token = new URL(route.request().url()).searchParams.get('license');
@@ -126,13 +132,17 @@ test('@claim:paid-supporter a purchase or restore activates saved colors and the
     });
   });
   await page.goto('/demo');
+  await expect(page.locator('.supporter')).toHaveCount(0);
+  await expect(page.locator('#buy-link')).toHaveCount(0);
   await page.getByRole('button', { name: 'Start for real' }).click();
   await page.waitForURL('/');
+  await expect(page.getByRole('heading', { name: 'Add colors and a timer for ₹249' })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Buy once for ₹249 on Sociobot/ })).toHaveAttribute('href', billingFixture.checkout.pilot_url);
   await page.goto('/?license=purchased-license');
   await expect(page).toHaveURL('/');
   await expect(page.locator('#license-status')).toHaveText('Purchase verified. The Supporter pack is active.');
   expect(await page.evaluate(() => localStorage.getItem('sb_license:page-pointer'))).toBe('purchased-license');
-  await expect(page.getByRole('link', { name: 'Supporter pack active ✓' })).toHaveAttribute('href', 'https://pilot-api.sociobot.in/api/v1/products/page-pointer/checkout');
+  await expect(page.getByRole('link', { name: /Supporter pack active/ })).toHaveAttribute('href', billingFixture.checkout.pilot_url);
 
   await context.grantPermissions(['camera'], { origin: 'http://127.0.0.1:4173' });
   await page.getByRole('button', { name: 'Open camera' }).click();
@@ -156,14 +166,38 @@ test('@claim:paid-supporter a purchase or restore activates saved colors and the
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.getByLabel('Already purchased? Paste your license').fill('restored-license');
-  await page.getByRole('button', { name: 'Restore' }).click();
+  await page.getByRole('button', { name: 'Restore Supporter pack' }).click();
   await expect(page.locator('#license-status')).toHaveText('Purchase restored. The Supporter pack is active.');
   await page.getByLabel('Already purchased? Paste your license').fill('revoked-license');
-  await page.getByRole('button', { name: 'Restore' }).click();
+  await page.getByRole('button', { name: 'Restore Supporter pack' }).click();
   await expect(page.locator('#license-status')).toHaveText('This license is not active. Check the token or buy the pack.');
   await page.getByRole('button', { name: 'Open camera' }).click();
   await expect(page.locator('#supporter-tools')).toBeHidden();
   expect(verifiedTokens).toEqual(['purchased-license', 'restored-license', 'revoked-license']);
+});
+
+test('@claim:license-cache-24h automatic license verification reuses a verdict for 24 hours', async ({ page }) => {
+  let verificationRequests = 0;
+  await page.route('https://pilot-api.sociobot.in/api/v1/products/page-pointer/verify?*', async (route) => {
+    verificationRequests += 1;
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ valid: true, reason: 'ok' }) });
+  });
+  await page.clock.install({ time: new Date('2026-08-29T12:00:00Z') });
+  await page.goto('/');
+  await page.getByLabel('Already purchased? Paste your license').fill('cache-test-license');
+  await page.getByRole('button', { name: 'Restore Supporter pack' }).click();
+  await expect(page.locator('#license-status')).toContainText('Purchase restored.');
+  expect(verificationRequests).toBe(1);
+
+  await page.clock.fastForward(86_399_000);
+  await page.reload();
+  await expect(page.locator('#license-status')).toContainText('Supporter pack is active');
+  expect(verificationRequests).toBe(1);
+
+  await page.clock.fastForward(2_000);
+  await page.reload();
+  await expect.poll(() => verificationRequests).toBe(2);
+  await expect(page.locator('#license-status')).toContainText('Purchase verified.');
 });
 
 test('@claim:pwa-update the installable app precaches its shell and applies a waiting update from the prompt', async ({ page }) => {
@@ -199,7 +233,7 @@ test('@claim:pwa-update the installable app precaches its shell and applies a wa
     await page.goto(`${origin}/demo`, { waitUntil: 'networkidle' });
     await page.evaluate(async () => navigator.serviceWorker.ready);
     await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
-    await page.waitForFunction(async () => (await caches.keys()).includes('page-pointer-v1.1.2-shell'));
+    await page.waitForFunction(async () => (await caches.keys()).includes('page-pointer-v1.1.3-shell'));
     const manifest = await page.evaluate(async () => (await fetch('/manifest.webmanifest')).json());
     expect(manifest).toMatchObject({ display: 'standalone', start_url: '/?v=2&source=installed' });
     expect(manifest.icons).toEqual(expect.arrayContaining([expect.objectContaining({ sizes: '192x192' }), expect.objectContaining({ sizes: '512x512' })]));
@@ -210,7 +244,7 @@ test('@claim:pwa-update the installable app precaches its shell and applies a wa
     expect(await page.evaluate(async () => (await navigator.serviceWorker.getRegistration())?.waiting?.state)).toBe('installed');
     await Promise.all([
       page.waitForEvent('framenavigated', (frame) => frame === page.mainFrame()),
-      page.getByRole('button', { name: 'Update' }).click()
+      page.getByRole('button', { name: 'Install update' }).click()
     ]);
     await page.waitForLoadState('networkidle');
     expect(await page.evaluate(async () => (await navigator.serviceWorker.getRegistration())?.waiting)).toBeFalsy();

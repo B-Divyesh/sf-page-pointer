@@ -19,6 +19,9 @@ const app = document.querySelector<HTMLDivElement>('#app')!;
 
 const route = location.pathname.replace(/\/$/, '');
 const isDemo = route === '/demo' || (route === '' && new URLSearchParams(location.search).get('demo') === '1');
+const navigationType = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+const shouldFocusRouteHeading = sessionStorage.getItem('page-pointer:route-change') === '1' || navigationType?.type === 'back_forward';
+sessionStorage.removeItem('page-pointer:route-change');
 setStorageNamespace(isDemo ? 'demo' : 'real');
 setRouteMetadata(route, isDemo);
 
@@ -26,6 +29,7 @@ if (route === '/privacy' || route === '/terms') renderLegal(route);
 else {
   renderHome();
 }
+prepareRouteNavigation();
 
 function setRouteMetadata(path: string, demo: boolean): void {
   const metadata = path === '/privacy'
@@ -52,25 +56,25 @@ function renderLegal(route: string): void {
     <header class="site-header compact"><a class="brand" href="/" aria-label="Page Pointer home"><img src="/assets/mark.svg" alt="" width="36" height="36"><span>Page Pointer</span></a><nav class="site-nav" aria-label="Primary"><a href="/demo">Demo</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav></header>
     <main id="main" class="legal-page" tabindex="-1">
       <p class="eyebrow">${privacy ? 'Privacy' : 'Terms'} · effective 28 August 2026</p>
-      <h1>${privacy ? 'How Page Pointer handles your data' : 'Terms for using Page Pointer'}</h1>
+      <h1 tabindex="-1">${privacy ? 'How Page Pointer handles your data' : 'Terms for using Page Pointer'}</h1>
       ${privacy ? `
         <p class="lede">Your camera frames stay on your device. Page Pointer does not send, record, or save pictures of books.</p>
-        <h2>What stays on this device</h2><p>Your guide preferences and up to 50 brief session summaries are stored in IndexedDB. Each summary contains a start time, duration, and camera source. The demo uses a separate temporary database. Page Pointer deletes it when you start for real. A purchased license and its last check are stored in localStorage. You can export or erase local reading data in Settings.</p>
-        <h2>What leaves the device</h2><p>Nothing leaves during reading. If you buy or restore the Supporter pack, Page Pointer sends the license to Sociobot for purchase verification. Sociobot/Dodo handles payment and checkout information under its own notices.</p>
-        <h2>Camera and network</h2><p>The browser provides camera access only after you agree. Analysis uses a temporary canvas in memory. Frames are discarded immediately and never written to storage. The app has no analytics, advertising, profiling, or cloud OCR.</p>
+        <h2>What stays on this device</h2><p>Your guide preferences and up to 50 brief session summaries stay in this browser. Each summary contains a start time, duration, and camera source. The demo uses a separate temporary store. Page Pointer deletes it when you start for real. A purchased license and its last check stay in this browser’s local storage. You can export or erase local reading data in Settings.</p>
+        <h2>What leaves the device</h2><p>Nothing leaves during reading. If you buy or restore the Supporter pack, Page Pointer sends the license to Sociobot for purchase verification. Checkout opens on Sociobot.</p>
+        <h2>Camera and network</h2><p>The browser provides camera access only after you agree. The app checks each camera frame in memory, then discards it. The app loads no tracking, third-party code, remote fonts, or embedded checkout.</p>
         <h2>Your choices</h2><p>You can stop the camera, deny permission, use the demo, export local data, or erase it. Removing this site's browser data also removes all preferences and the saved license.</p>
         <h2>Contact</h2><p>Questions can be sent to <a href="mailto:privacy@sociobot.in">privacy@sociobot.in</a>.</p>
       ` : `
         <p class="lede">Page Pointer is a reading aid provided as-is. It is not a diagnostic, medical, tutoring, or assessment service.</p>
         <h2>Using the guide</h2><p>You may use the app at home, in class, or while tutoring. Keep control of the phone and protect it from falls. Do not rely on automatic detection where a mistake could cause harm.</p>
-        <h2>Supporter purchase</h2><p>The optional Supporter pack costs ₹249 once. It adds saved visual presets and the quiet ten-minute timer. The camera guide, manual controls, privacy controls, and data export remain free. Sociobot/Dodo is the merchant of record. It handles refunds, and a refund revokes the associated license.</p>
-        <h2>Availability and limits</h2><p>The app is designed for printed Latin-script text in v1. Curved pages, glare, illustrations, unusual layouts, or low contrast can affect detection. We may improve or discontinue the service. Where the law permits, the service has no warranties. Liability is limited to the amount you paid.</p>
+        <h2>Supporter purchase</h2><p>The optional Supporter pack costs ₹249 once. It adds saved guide colors and the quiet ten-minute timer. The camera guide, manual controls, privacy controls, and data export remain free. Checkout opens on Sociobot.</p>
+        <h2>Availability and limits</h2><p>This version works with printed text that uses the Latin alphabet. Curved pages, glare, illustrations, unusual layouts, or low contrast can affect detection. We may improve or discontinue the service. Where the law permits, the service has no warranties. Liability is limited to the amount you paid.</p>
         <h2>Respectful use</h2><p>Do not record people without permission or violate copyright. Do not interfere with the app or billing service.</p>
         <h2>Contact</h2><p>Questions can be sent to <a href="mailto:support@sociobot.in">support@sociobot.in</a>.</p>
       `}
       <p><a class="text-link" href="/">← Return to Page Pointer</a></p>
     </main>
-    <footer><div class="footer-brand">Page Pointer</div><p>A reading guide for shared physical books.</p><nav aria-label="Legal"><a href="/demo">Demo</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav><p class="generated-note">Built by Param Factory · v1.1.2</p></footer>`;
+    <footer><div class="footer-brand">Page Pointer</div><p>A reading guide for shared physical books.</p><nav aria-label="Legal"><a href="/demo">Demo</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav><p class="generated-note">Built by Param Factory · v1.1.3</p></footer>`;
 }
 
 function renderHome(): void {
@@ -85,13 +89,13 @@ function renderHome(): void {
       <section class="hero" id="top">
         <div class="hero-copy">
           <p class="eyebrow">Camera reading guide</p>
-          <h1>Keep emerging readers<br><em>on the right word.</em></h1>
+          <h1 tabindex="-1">Keep emerging readers <br><em>on the right word.</em></h1>
           <p class="lede">For parents, tutors, and emerging readers, it marks the current word on a physical book.</p>
           <div class="hero-actions">
-            <button class="primary-button" id="open-camera" type="button"><span>Open camera</span><span aria-hidden="true">↗</span></button>
+            <button class="primary-button" id="open-camera" type="button">Open camera</button>
             <a class="secondary-button" id="try-demo" href="/demo">Try it with sample data</a>
           </div>
-          <p class="action-note">Opens a practice page with a short sample story.</p>
+          <p class="action-note">Opens the sample guide with a short story.</p>
           <ul class="privacy-note" aria-label="Page Pointer facts"><li>Frames stay on this device.</li><li>No account needed.</li><li>Works offline after its first visit.</li></ul>
           <div class="camera-message" id="camera-message" role="status" aria-live="polite"></div>
         </div>
@@ -146,29 +150,29 @@ function renderHome(): void {
         <div class="section-rule"><span>How it works</span><span>Three steps</span></div>
         <h2 id="method-title">Follow each word in a physical book</h2>
         <ol class="method-grid">
-          <li><span class="method-number">01</span><div><h3>Aim</h3><p>Hold the rear camera above a well-lit printed page. Landscape works best.</p></div></li>
-          <li><span class="method-number">02</span><div><h3>Tap</h3><p>Touch the word being read. Page Pointer finds the nearest ink line—without reading it.</p></div></li>
-          <li><span class="method-number">03</span><div><h3>Follow</h3><p>Use Next or the arrow keys to travel word by word. Switch to a full-line guide anytime.</p></div></li>
+          <li><span class="method-number">01</span><div><h3>Aim the rear camera</h3><p>Hold the rear camera above a well-lit printed page. Landscape works best.</p></div></li>
+          <li><span class="method-number">02</span><div><h3>Tap the current word</h3><p>Touch the word being read. Page Pointer finds the nearest ink line—without reading it.</p></div></li>
+          <li><span class="method-number">03</span><div><h3>Follow with Next</h3><p>Use Next or the arrow keys to travel word by word. Switch to a full-line guide anytime.</p></div></li>
         </ol>
-        <div class="limits"><strong>Limits:</strong> v1 is designed for printed Latin-script text. Curved pages, glare, illustrations, or unusual layouts can confuse placement. Tap again or use Previous and Next.</div>
+        <div class="limits"><strong>Limits:</strong> This version works with printed text that uses the Latin alphabet. Curved pages, glare, illustrations, or unusual layouts can confuse placement. Tap again or use Previous and Next.</div>
       </section>
 
       <section class="local-section" aria-labelledby="local-title">
         <div class="local-diagram" aria-hidden="true"><div class="phone-outline"><span></span><i></i><b></b></div><span class="dimension horizontal">NO UPLOAD</span><span class="dimension vertical">FRAME / FRAME</span></div>
-        <div><p class="eyebrow">Local data</p><h2 id="local-title">Reading stays private on this device</h2><p>Line detection uses temporary pixels inside this browser. It creates no photos, transcripts, child profiles, scores, trackers, or cloud OCR.</p><details class="settings"><summary>Local data settings</summary><div class="settings-body"><p>Preferences and brief session summaries stay in this browser. Export, import, or erase them whenever you like.</p><div class="settings-actions"><button type="button" class="secondary-button" id="export-data" aria-label="Export JSON">Export JSON</button><label class="secondary-button file-button">Import JSON<input id="import-data" type="file" accept="application/json"></label><button type="button" class="danger-button" id="clear-data" aria-label="Erase local data">Erase local data</button></div><p id="data-status" role="status" aria-live="polite"></p></div></details></div>
+        <div><p class="eyebrow">Local data</p><h2 id="local-title">Reading stays private on this device</h2><p>The app checks each camera frame in memory, then discards it. It never reads, uploads, or stores the book’s words.</p><details class="settings"><summary>Local data settings</summary><div class="settings-body"><p>Preferences and brief session summaries stay in this browser. Export, import, or erase them whenever you like.</p><div class="settings-actions"><button type="button" class="secondary-button" id="export-data" aria-label="Export JSON">Export JSON</button><label class="secondary-button file-button">Import JSON<input id="import-data" type="file" accept="application/json"></label><button type="button" class="danger-button" id="clear-data" aria-label="Erase local data">Erase local data</button></div><p id="data-status" role="status" aria-live="polite"></p></div></details></div>
       </section>
 
-      <section class="supporter" aria-labelledby="supporter-title" ${isDemo ? 'hidden' : ''}>
-        <div><p class="eyebrow">Optional Supporter pack · one-time</p><h2 id="supporter-title">Add colors and a timer for ₹249</h2><p>The complete reading guide stays free. One purchase adds saved guide colors and a quiet ten-minute session timer.</p><p class="legal-copy">Sociobot/Dodo handles payment and refunds. A refund revokes the license.</p><nav class="supporter-legal" aria-label="Supporter purchase policies"><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav></div>
+      ${isDemo ? '' : `<section class="supporter" aria-labelledby="supporter-title">
+        <div><p class="eyebrow">Optional Supporter pack · one-time</p><h2 id="supporter-title">Add colors and a timer for ₹249</h2><p>The complete reading guide stays free. One purchase adds saved guide colors and a quiet ten-minute session timer.</p><p class="legal-copy">Checkout opens on Sociobot.</p><nav class="supporter-legal" aria-label="Supporter purchase policies"><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav></div>
         <div class="purchase-panel" id="purchase-panel">
-          <a class="primary-button" id="buy-link" href="#">Buy once · ₹249</a>
-          <form id="restore-form"><label for="license-input">Already purchased? Paste your license</label><div><input id="license-input" name="license" autocomplete="off" spellcheck="false"><button type="submit" class="secondary-button">Restore</button></div></form>
-          <p id="license-status" role="status" aria-live="polite">No account required.</p>
+          <a class="primary-button" id="buy-link" href="#" aria-label="Buy once for ₹249 on Sociobot; opens checkout">Buy once for ₹249 on Sociobot (opens checkout)</a>
+          <form id="restore-form"><label for="license-input">Already purchased? Paste your license</label><div><input id="license-input" name="license" autocomplete="off" spellcheck="false"><button type="submit" class="secondary-button">Restore Supporter pack</button></div></form>
+          <p id="license-status" role="status" aria-live="polite">No account needed.</p>
         </div>
-      </section>
+      </section>`}
     </main>
-    <div class="toast" id="update-toast" role="status" hidden><span>An app update is ready.</span><button type="button" id="update-button">Update</button></div>
-    <footer><div class="brand footer-brand"><img src="/assets/mark.svg" alt="" width="32" height="32"><span>Page Pointer</span></div><p>A reading guide for shared physical books.</p><nav aria-label="Legal"><a href="/demo">Demo</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav><p class="generated-note">Built by Param Factory · v1.1.2 · original hero artwork</p></footer>`;
+    <div class="toast" id="update-toast" role="status" hidden><span>An app update is ready.</span><button type="button" id="update-button">Install update</button></div>
+    <footer><div class="brand footer-brand"><img src="/assets/mark.svg" alt="" width="32" height="32"><span>Page Pointer</span></div><p>A reading guide for shared physical books.</p><nav aria-label="Legal"><a href="/demo">Demo</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav><p class="generated-note">Built by Param Factory · v1.1.3 · original hero artwork</p></footer>`;
   void initialiseHome();
 }
 
@@ -189,7 +193,7 @@ async function initialiseHome(): Promise<void> {
   const cameraMessage = byId<HTMLDivElement>('camera-message');
   const coordinateLabel = byId<HTMLSpanElement>('coordinate-label');
   const sourceLabel = byId<HTMLSpanElement>('source-label');
-  const licenseStatus = byId<HTMLParagraphElement>('license-status');
+  const licenseStatus = document.getElementById('license-status') as HTMLParagraphElement | null;
   const supporterTools = byId<HTMLDivElement>('supporter-tools');
   const initialLicenseToken = isDemo ? null : captureLicenseFromUrl();
   let preferences: Preferences = await getPreferences().catch(() => ({ mode: 'word', guideColor: '#F7C948', thickness: 12 }));
@@ -226,10 +230,14 @@ async function initialiseHome(): Promise<void> {
     supporterUnlocked = unlocked;
     supporterTools.hidden = !unlocked;
     applyGuideColor(unlocked ? preferences.guideColor : '#F7C948');
-    licenseStatus.textContent = message ?? (unlocked ? 'Supporter pack active on this device.' : 'No account required.');
-    const panel = byId<HTMLDivElement>('purchase-panel');
-    panel.classList.toggle('is-unlocked', unlocked);
-    byId<HTMLAnchorElement>('buy-link').textContent = unlocked ? 'Supporter pack active ✓' : 'Buy once · ₹249';
+    if (licenseStatus) licenseStatus.textContent = message ?? (unlocked ? 'Supporter pack active on this device.' : 'No account needed.');
+    const panel = document.getElementById('purchase-panel');
+    panel?.classList.toggle('is-unlocked', unlocked);
+    const buyLink = document.getElementById('buy-link') as HTMLAnchorElement | null;
+    if (buyLink) {
+      buyLink.textContent = unlocked ? 'Supporter pack active · Open checkout on Sociobot' : 'Buy once for ₹249 on Sociobot (opens checkout)';
+      buyLink.setAttribute('aria-label', unlocked ? 'Supporter pack active; open checkout on Sociobot' : 'Buy once for ₹249 on Sociobot; opens checkout');
+    }
   };
   setSupporter(supporterUnlocked);
 
@@ -320,7 +328,7 @@ async function initialiseHome(): Promise<void> {
     instrument.scrollIntoView({ behavior: scrollBehavior, block: 'start' });
     video.hidden = nextSource !== 'camera';
     demo.hidden = nextSource !== 'demo';
-    sourceLabel.textContent = nextSource === 'camera' ? 'REAR CAMERA' : 'SAMPLE PAGE · LOCAL';
+    sourceLabel.textContent = nextSource === 'camera' ? 'REAR CAMERA' : 'SAMPLE GUIDE · LOCAL';
     guideStatus.innerHTML = '<strong>Ready to place.</strong><span>Tap a printed word.</span>';
     if (nextSource === 'demo') setTimeout(() => placeAt(), 250);
   }
@@ -417,7 +425,7 @@ async function initialiseHome(): Promise<void> {
     const update = () => {
       const remaining = Math.max(0, 600 - Math.floor((Date.now() - timerStarted) / 1000));
       status.textContent = `${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, '0')} remaining`;
-      if (remaining === 0) { window.clearInterval(timerInterval); timerInterval = 0; timerButton.textContent = 'Start again'; status.textContent = 'Ten minutes complete.'; navigator.vibrate?.([100, 80, 100]); }
+      if (remaining === 0) { window.clearInterval(timerInterval); timerInterval = 0; timerButton.textContent = 'Start 10-minute timer again'; status.textContent = 'Ten minutes complete.'; navigator.vibrate?.([100, 80, 100]); }
     };
     update(); timerInterval = window.setInterval(update, 1000);
   });
@@ -443,6 +451,7 @@ async function initialiseHome(): Promise<void> {
   });
 
   if (!isDemo) {
+    if (!licenseStatus) throw new Error('Missing license-status');
     byId<HTMLAnchorElement>('buy-link').href = checkoutUrl();
     byId<HTMLFormElement>('restore-form').addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -494,10 +503,30 @@ async function initialiseHome(): Promise<void> {
     // positioning synchronously, then reset the starting point to the document.
     requestAnimationFrame(() => {
       startWorkspace('demo', 'auto');
-      document.body.focus({ preventScroll: true });
+      if (!shouldFocusRouteHeading) document.body.focus({ preventScroll: true });
     });
   }
   registerServiceWorker();
+}
+
+function prepareRouteNavigation(): void {
+  const focusHeading = () => requestAnimationFrame(() => {
+    const heading = document.querySelector<HTMLHeadingElement>('h1');
+    if (!heading) return;
+    heading.focus({ preventScroll: true });
+    const announcement = document.getElementById('route-announcement');
+    if (announcement) announcement.textContent = `${heading.textContent?.trim() ?? document.title} page loaded`;
+  });
+
+  document.addEventListener('click', (event) => {
+    const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href]');
+    if (!link || link.origin !== location.origin || link.target || link.hasAttribute('download')) return;
+    const destination = `${link.pathname}${link.search}`;
+    if (destination !== `${location.pathname}${location.search}`) sessionStorage.setItem('page-pointer:route-change', '1');
+  }, { capture: true });
+
+  window.addEventListener('pageshow', (event) => { if (event.persisted) focusHeading(); });
+  if (shouldFocusRouteHeading) focusHeading();
 }
 
 function registerServiceWorker(): void {
@@ -519,7 +548,9 @@ function registerServiceWorker(): void {
   else window.addEventListener('load', () => void register(), { once: true });
 }
 
-window.addEventListener('pagehide', () => {
-  const token = localStorage.getItem(LICENSE_KEY);
-  if (token === '') removeLicense();
-});
+if (!isDemo) {
+  window.addEventListener('pagehide', () => {
+    const token = localStorage.getItem(LICENSE_KEY);
+    if (token === '') removeLicense();
+  });
+}

@@ -1,7 +1,31 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const sameOrigin = (url: string) => new URL(url).origin === 'http://127.0.0.1:4173';
+
+async function installSyntheticCameraFrame(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const original = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, ...args: Parameters<typeof original>) {
+      const context = original.apply(this, args) as CanvasRenderingContext2D | null;
+      if (args[0] === '2d' && context) {
+        context.getImageData = (_x: number, _y: number, width: number, height: number) => {
+          const data = new Uint8ClampedArray(width * height * 4).fill(255);
+          for (const row of [Math.round(height * 0.3), Math.round(height * 0.6)]) {
+            for (const start of [0.1, 0.28, 0.5, 0.72].map((ratio) => Math.round(width * ratio))) {
+              for (let y = row; y < row + 12; y += 1) for (let x = start; x < start + 28; x += 1) {
+                const offset = (y * width + x) * 4;
+                data[offset] = 20; data[offset + 1] = 20; data[offset + 2] = 20;
+              }
+            }
+          }
+          return new ImageData(data, width, height);
+        };
+      }
+      return context as ReturnType<typeof original>;
+    } as typeof HTMLCanvasElement.prototype.getContext;
+  });
+}
 
 test('@claim:demo-sandbox the direct sample demo opens a usable guide in its own storage namespace', async ({ page }) => {
   await page.goto('/demo');
@@ -81,42 +105,89 @@ test('@claim:local-only-reading sample reading sends no third-party request and 
   expect(JSON.stringify(data)).not.toMatch(/kite|Mina|image|frame|canvas/i);
 });
 
-test('@claim:offline-demo the sample guide works offline after the first visit', async ({ page, context }) => {
-  const consoleErrors: string[] = [];
-  const failedRequests: string[] = [];
-  page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
-  page.on('requestfailed', (request) => failedRequests.push(request.url()));
-  await page.goto('/?demo=1');
-  await page.evaluate(async () => { await navigator.serviceWorker.ready; });
-  await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
-  await page.waitForFunction(async () => (await caches.keys()).some((key) => key.includes('page-pointer-v1.1.2-shell')));
-  await page.evaluate(async () => { await document.fonts.ready; });
-  expect(await page.evaluate(() => document.fonts.size)).toBe(3);
-  expect(await page.evaluate(() => [...document.fonts].every((font) => font.status === 'loaded'))).toBe(true);
-  // Let Chromium deliver any final online resource events before the test
-  // starts attributing failures to the offline reload.
-  await page.waitForTimeout(250);
-  expect([consoleErrors, failedRequests]).toEqual([[], []]);
-  consoleErrors.length = 0;
-  failedRequests.length = 0;
-  await context.setOffline(true);
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  expect(await page.evaluate(() => document.documentElement.classList.contains('is-offline'))).toBe(true);
-  expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily)).toContain('system-ui');
-  expect([consoleErrors, failedRequests]).toEqual([[], []]);
-  await expect(page.getByRole('complementary', { name: 'Demo controls' })).toBeVisible();
-  await expect(page.locator('#focus-guide')).toHaveClass(/is-visible/);
-  await page.getByRole('button', { name: 'Next word' }).click();
-  await expect(page.locator('#coordinate-label')).toContainText('WORD');
+test('@claim:offline-demo the camera and sample guides work offline after the first visit', async ({ browser, baseURL }) => {
+  const offlineContext = await browser.newContext({ baseURL, permissions: ['camera'] });
+  const page = await offlineContext.newPage();
+  try {
+    const consoleErrors: string[] = [];
+    page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
+    await page.goto('/');
+    await page.evaluate(async () => { await navigator.serviceWorker.ready; await document.fonts.ready; });
+    await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+    await page.waitForFunction(async () => (await caches.keys()).some((key) => key.includes('page-pointer-v1.1.3-shell')));
+    expect(await page.evaluate(() => [...document.fonts].every((font) => font.status === 'loaded'))).toBe(true);
+
+    await offlineContext.setOffline(true);
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await installSyntheticCameraFrame(page);
+    expect(await page.evaluate(() => document.documentElement.classList.contains('is-offline'))).toBe(true);
+    await page.getByRole('button', { name: 'Open camera' }).click();
+    await expect(page.locator('#camera-video')).toBeVisible();
+    await page.locator('#viewfinder').click({ position: { x: 110, y: 150 } });
+    await expect(page.locator('#focus-guide')).toHaveClass(/is-visible/);
+    const cameraPosition = await page.locator('#coordinate-label').textContent();
+    await page.getByRole('button', { name: 'Next word' }).click();
+    await expect(page.locator('#coordinate-label')).not.toHaveText(cameraPosition ?? '');
+    await page.getByRole('button', { name: 'Line' }).click();
+    await expect(page.getByRole('button', { name: 'Line' })).toHaveAttribute('aria-pressed', 'true');
+    await page.getByRole('button', { name: 'Close guide' }).click();
+
+    await page.goto('/?demo=1', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('complementary', { name: 'Demo controls' })).toBeVisible();
+    await expect(page.locator('#focus-guide')).toHaveClass(/is-visible/);
+    await page.getByRole('button', { name: 'Next word' }).click();
+    await expect(page.locator('#coordinate-label')).toContainText('WORD');
+    expect(consoleErrors).toEqual([]);
+  } finally {
+    await offlineContext.setOffline(false);
+    await offlineContext.close();
+  }
 });
 
-test('@claim:free-core parents and tutors can try the complete core guide without an account', async ({ page }) => {
+test('@claim:free-core parents and tutors can use the complete camera guide without an account or license', async ({ page, context }) => {
+  await context.grantPermissions(['camera'], { origin: 'http://127.0.0.1:4173' });
   await page.goto('/');
-  await expect(page.getByText('No account needed.')).toBeVisible();
+  await page.evaluate(() => localStorage.clear());
+  await expect(page.getByLabel('Page Pointer facts').getByText('No account needed.')).toBeVisible();
   await expect(page.getByRole('heading', { name: /Keep emerging readers/ })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Try it with sample data' })).toHaveAttribute('href', '/demo');
-  await page.getByRole('link', { name: 'Try it with sample data' }).click();
+  expect(await page.evaluate(() => localStorage.getItem('sb_license:page-pointer'))).toBeNull();
+  await installSyntheticCameraFrame(page);
+  await page.getByRole('button', { name: 'Open camera' }).click();
   await expect(page.getByRole('heading', { name: 'Place the guide' })).toBeVisible();
+  await page.locator('#viewfinder').click({ position: { x: 110, y: 150 } });
+  await expect(page.locator('#focus-guide')).toHaveClass(/is-visible/);
+  const placed = await page.locator('#coordinate-label').textContent();
+  await page.getByRole('button', { name: 'Next word' }).click();
+  await expect(page.locator('#coordinate-label')).not.toHaveText(placed ?? '');
+  await page.getByRole('button', { name: 'Previous word' }).click();
+  await expect(page.locator('#coordinate-label')).toHaveText(placed ?? '');
+  await page.getByRole('button', { name: 'Line' }).click();
+  await expect(page.getByRole('button', { name: 'Line' })).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('#viewfinder').focus();
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('Space');
+  await expect(page.locator('#supporter-tools')).toBeHidden();
+  await expect(page.locator('text=/sign in/i')).toHaveCount(0);
+});
+
+test('@claim:private-runtime the sample flow loads no tracking, third-party code, remote fonts, or embedded checkout', async ({ page }) => {
+  const requests: string[] = [];
+  page.on('request', (request) => requests.push(request.url()));
+  await page.goto('/?demo=1');
+  await expect(page.locator('#focus-guide')).toHaveClass(/is-visible/);
+  await page.getByRole('button', { name: 'Next word' }).click();
+  await page.locator('details.settings').evaluate((details: HTMLDetailsElement) => { details.open = true; });
+  const loaded = await page.evaluate(() => ({
+    scripts: [...document.scripts].map((script) => script.src).filter(Boolean),
+    frames: document.querySelectorAll('iframe').length,
+    resources: performance.getEntriesByType('resource').map((entry) => entry.name),
+    fontFamilies: [...document.fonts].map((font) => font.family)
+  }));
+  expect(requests.every(sameOrigin)).toBe(true);
+  expect(loaded.scripts.every(sameOrigin)).toBe(true);
+  expect(loaded.resources.every(sameOrigin)).toBe(true);
+  expect(loaded.frames).toBe(0);
+  expect(loaded.fontFamilies).toEqual(expect.arrayContaining(['Atkinson Hyperlegible', 'IBM Plex Mono']));
 });
 
 test('keyboard users can reach the skip link and advance the sample guide', async ({ page }) => {
@@ -138,6 +209,25 @@ test('keyboard users can reach the skip link and advance the sample guide', asyn
   await expect(page.locator('#coordinate-label')).not.toHaveText(afterArrow ?? '');
 });
 
+test('route changes, Back, and Forward focus and announce the h1 without losing restored scroll', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('.local-section').scrollIntoViewIfNeeded();
+  const homeScroll = await page.evaluate(() => scrollY);
+  await page.locator('footer').getByRole('link', { name: 'Privacy' }).click();
+  await expect(page).toHaveURL('/privacy');
+  await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
+  await expect(page.locator('#route-announcement')).toContainText('How Page Pointer handles your data page loaded');
+
+  await page.goBack();
+  await expect(page).toHaveURL('/');
+  await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
+  expect(await page.evaluate(() => scrollY)).toBeGreaterThan(homeScroll - 80);
+
+  await page.goForward();
+  await expect(page).toHaveURL('/privacy');
+  await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
+});
+
 test('home, demo, legal pages, and the static 404 have no serious accessibility regressions', async ({ page }) => {
   for (const path of ['/', '/demo', '/privacy', '/terms', '/404.html']) {
     const consoleErrors: string[] = [];
@@ -152,9 +242,20 @@ test('home, demo, legal pages, and the static 404 have no serious accessibility 
         : path === '/privacy' ? 'Privacy — Page Pointer'
           : path === '/terms' ? 'Terms — Page Pointer' : 'Page not found — Page Pointer';
     await expect(page).toHaveTitle(expectedTitle);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.{20}/);
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', expectedTitle);
+    await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', /.{20}/);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /page-pointer-social-1200x630\.jpg$/);
+    await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute('content', expectedTitle);
+    await expect(page.locator('meta[name="twitter:description"]')).toHaveAttribute('content', /.{20}/);
     if (path !== '/404.html') {
       const canonicalPath = path === '/' ? '/' : path;
       await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://page-pointer.sociobot.in${canonicalPath}`);
+    } else {
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://page-pointer.sociobot.in/404.html');
+      await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute('href', '/assets/icon-192.png');
+      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /page-pointer-social-1200x630\.jpg$/);
+      await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
     }
     const results = await new AxeBuilder({ page }).analyze();
     const serious = results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''));
@@ -173,7 +274,7 @@ test('home, demo, legal pages, and the static 404 have no serious accessibility 
       await page.keyboard.press('Tab');
       await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused();
       await expect(page.locator('footer').getByRole('link', { name: 'Privacy' })).toBeVisible();
-      await expect(page.locator('footer')).toContainText('v1.1.2');
+      await expect(page.locator('footer')).toContainText('v1.1.3');
     }
     expect([consoleErrors, pageErrors]).toEqual([[], []]);
     page.off('console', onConsole);
