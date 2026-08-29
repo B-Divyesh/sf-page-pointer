@@ -73,8 +73,28 @@ npm run test:e2e
 
 ## Deployment
 
-Deployment and live identity evidence will be appended after the committed
-repair is uploaded with the work order's static deployment command.
+Repair commit `2749401` was pushed to `origin/main`. The final `dist/` was
+deployed with `/opt/fleet/lib/deploy-static.sh page-pointer dist` on 2026-08-29
+UTC. Azure Static Web Apps deployment
+`9aa17e32-aa34-43b2-a9b9-9559199ae535` succeeded; the custom domain reported
+Ready.
+
+- The rebuilt `dist/index.html` and the live response have the same SHA-256:
+  `54df16bc0518d2effbae4bb9914eb76dabc842cd94854a8ea884605e6c792659`.
+- `/`, `/demo`, `/privacy`, and `/terms` return 200. An unknown route returns
+  the designed 404 with HTTP 404.
+- Live responses send CSP with `frame-ancestors 'none'`, the camera-only
+  Permissions-Policy, HSTS, strict-origin referrer policy, and `nosniff`.
+  Hashed assets send one-year immutable caching, `/sw.js` sends `no-cache`,
+  and the manifest sends `application/manifest+json`.
+- Live `verify-url.sh` checks on `/` and `/demo` passed with no console or page
+  errors and the expected title, language, heading, landmark, and image-alt
+  results at desktop and 390 px.
+- A fresh live 390 px browser loaded only the product origin, found no axe
+  violations, focused the skip link first, advanced the guide, registered and
+  was controlled by `page-pointer-v1.1.1-shell`, reloaded and advanced offline
+  with no failed requests, and had no horizontal overflow. No waiting worker
+  remained after the update.
 
 ## Known gaps
 
