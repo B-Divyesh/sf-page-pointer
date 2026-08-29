@@ -1,0 +1,44 @@
+{
+  "base": "https://page-pointer.sociobot.in",
+  "demo": {
+    "banner": "Demo — sample data, nothing is savedTry the guide without using your reading data.Reset demoStart for real",
+    "directDemoDatabases": [
+      "demo:page-pointer"
+    ],
+    "supporterSections": 0,
+    "purchaseLinks": 0,
+    "databasesBeforeReset": [
+      "demo:page-pointer",
+      "page-pointer"
+    ],
+    "realDataUnchanged": true,
+    "positionMoved": true,
+    "thirdPartyRequests": [],
+    "resetReturnedCleanGuide": true
+  },
+  "routes": {
+    "privacyTitle": "Privacy — Page Pointer",
+    "privacyHeadingFocused": true,
+    "announcement": "How Page Pointer handles your data page loaded",
+    "backHeadingFocused": true,
+    "backScrollRestored": true,
+    "notFound": {
+      "status": 404,
+      "title": "Page not found — Page Pointer",
+      "canonical": "https://page-pointer.sociobot.in/404.html",
+      "ogImage": "https://page-pointer.sociobot.in/assets/page-pointer-social-1200x630.jpg",
+      "twitterCard": "summary_large_image",
+      "action": "Open Page Pointer"
+    }
+  },
+  "offline": {
+    "realCameraVisible": true,
+    "sampleGuideMoved": true
+  },
+  "supporter": {
+    "heading": "Add colors and a timer for ₹249",
+    "checkoutLabel": "Buy once for ₹249 on Sociobot (opens checkout)",
+    "checkoutHref": "https://api.sociobot.in/api/v1/products/page-pointer/checkout"
+  },
+  "errors": []
+}

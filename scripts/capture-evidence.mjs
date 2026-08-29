@@ -44,18 +44,24 @@ for (const path of ['/', '/?demo=1', '/demo', '/privacy', '/terms', base.startsW
   const response = await page.goto(`${base}${path}`, { waitUntil: 'networkidle' });
   const axe = await new AxeBuilder({ page }).analyze();
   const serious = axe.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact));
+  const status = response?.status();
+  const expectedNotFoundError = path === '/not-a-real-page' && status === 404;
+  const unexpectedErrors = expectedNotFoundError
+    ? errors.filter((error) => !/Failed to load resource.*404/i.test(error))
+    : errors;
   const route = {
     path,
-    status: response?.status(),
+    status,
     title: await page.title(),
     h1: await page.locator('h1').count(),
     main: await page.locator('main').count(),
     canonical: await page.locator('link[rel="canonical"]').getAttribute('href'),
     seriousAxe: serious.map((violation) => violation.id),
-    errors
+    errors: unexpectedErrors,
+    expectedDocument404: expectedNotFoundError && errors.length > 0
   };
   report.routes.push(route);
-  if (route.h1 !== 1 || route.main !== 1 || serious.length || errors.length) throw new Error(`${path} failed browser checks: ${JSON.stringify(route)}`);
+  if (route.h1 !== 1 || route.main !== 1 || serious.length || unexpectedErrors.length) throw new Error(`${path} failed browser checks: ${JSON.stringify(route)}`);
   if (path === '/?demo=1') {
     await page.screenshot({ path: `${evidenceDir}/demo-mobile.png`, fullPage: true });
     if (await page.locator('.demo-banner').count() !== 1 || await page.locator('.supporter').count() !== 0) throw new Error('demo isolation UI failed');

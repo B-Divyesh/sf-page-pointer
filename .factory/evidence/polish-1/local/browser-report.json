@@ -1,0 +1,105 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "routes": [
+    {
+      "path": "/",
+      "status": 200,
+      "title": "Page Pointer — follow words in physical books",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://page-pointer.sociobot.in/",
+      "seriousAxe": [],
+      "errors": []
+    },
+    {
+      "path": "/?demo=1",
+      "status": 200,
+      "title": "Demo — Page Pointer",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://page-pointer.sociobot.in/demo",
+      "seriousAxe": [],
+      "errors": []
+    },
+    {
+      "path": "/demo",
+      "status": 200,
+      "title": "Demo — Page Pointer",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://page-pointer.sociobot.in/demo",
+      "seriousAxe": [],
+      "errors": []
+    },
+    {
+      "path": "/privacy",
+      "status": 200,
+      "title": "Privacy — Page Pointer",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://page-pointer.sociobot.in/privacy",
+      "seriousAxe": [],
+      "errors": []
+    },
+    {
+      "path": "/terms",
+      "status": 200,
+      "title": "Terms — Page Pointer",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://page-pointer.sociobot.in/terms",
+      "seriousAxe": [],
+      "errors": []
+    },
+    {
+      "path": "/404.html",
+      "status": 200,
+      "title": "Page not found — Page Pointer",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://page-pointer.sociobot.in/404.html",
+      "seriousAxe": [],
+      "errors": []
+    }
+  ],
+  "firstScreen": {
+    "mobile": {
+      "h1": "Keep emerging readers on the right word.",
+      "action": "Try it with sample data",
+      "actionBottom": 505.953125,
+      "factsBottom": 634.703125,
+      "viewportHeight": 844,
+      "horizontalOverflow": false
+    },
+    "desktop": {
+      "h1": "Keep emerging readers on the right word.",
+      "action": "Try it with sample data",
+      "actionBottom": 680.265625,
+      "factsBottom": 781.328125,
+      "viewportHeight": 900,
+      "horizontalOverflow": false
+    }
+  },
+  "links": [
+    {
+      "href": "http://127.0.0.1:4173/#main",
+      "status": 200
+    },
+    {
+      "href": "http://127.0.0.1:4173/",
+      "status": 200
+    },
+    {
+      "href": "http://127.0.0.1:4173/demo",
+      "status": 200
+    },
+    {
+      "href": "http://127.0.0.1:4173/privacy",
+      "status": 200
+    },
+    {
+      "href": "http://127.0.0.1:4173/terms",
+      "status": 200
+    }
+  ]
+}

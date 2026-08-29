@@ -1,0 +1,111 @@
+{
+  "base": "https://page-pointer.sociobot.in",
+  "routes": [
+    {
+      "path": "/",
+      "status": 200,
+      "title": "Page Pointer — follow words in physical books",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://page-pointer.sociobot.in/",
+      "seriousAxe": [],
+      "errors": [],
+      "expectedDocument404": false
+    },
+    {
+      "path": "/?demo=1",
+      "status": 200,
+      "title": "Demo — Page Pointer",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://page-pointer.sociobot.in/demo",
+      "seriousAxe": [],
+      "errors": [],
+      "expectedDocument404": false
+    },
+    {
+      "path": "/demo",
+      "status": 200,
+      "title": "Demo — Page Pointer",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://page-pointer.sociobot.in/demo",
+      "seriousAxe": [],
+      "errors": [],
+      "expectedDocument404": false
+    },
+    {
+      "path": "/privacy",
+      "status": 200,
+      "title": "Privacy — Page Pointer",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://page-pointer.sociobot.in/privacy",
+      "seriousAxe": [],
+      "errors": [],
+      "expectedDocument404": false
+    },
+    {
+      "path": "/terms",
+      "status": 200,
+      "title": "Terms — Page Pointer",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://page-pointer.sociobot.in/terms",
+      "seriousAxe": [],
+      "errors": [],
+      "expectedDocument404": false
+    },
+    {
+      "path": "/not-a-real-page",
+      "status": 404,
+      "title": "Page not found — Page Pointer",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://page-pointer.sociobot.in/404.html",
+      "seriousAxe": [],
+      "errors": [],
+      "expectedDocument404": true
+    }
+  ],
+  "firstScreen": {
+    "mobile": {
+      "h1": "Keep emerging readers on the right word.",
+      "action": "Try it with sample data",
+      "actionBottom": 505.953125,
+      "factsBottom": 634.703125,
+      "viewportHeight": 844,
+      "horizontalOverflow": false
+    },
+    "desktop": {
+      "h1": "Keep emerging readers on the right word.",
+      "action": "Try it with sample data",
+      "actionBottom": 680.265625,
+      "factsBottom": 781.328125,
+      "viewportHeight": 900,
+      "horizontalOverflow": false
+    }
+  },
+  "links": [
+    {
+      "href": "https://page-pointer.sociobot.in/#main",
+      "status": 200
+    },
+    {
+      "href": "https://page-pointer.sociobot.in/",
+      "status": 200
+    },
+    {
+      "href": "https://page-pointer.sociobot.in/demo",
+      "status": 200
+    },
+    {
+      "href": "https://page-pointer.sociobot.in/privacy",
+      "status": 200
+    },
+    {
+      "href": "https://page-pointer.sociobot.in/terms",
+      "status": 200
+    }
+  ]
+}
