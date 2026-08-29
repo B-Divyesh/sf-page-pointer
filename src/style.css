@@ -66,7 +66,7 @@ img { max-width: 100%; }
 .network-state.is-offline i { background: var(--yellow); box-shadow: 0 0 0 3px rgba(247, 201, 72, .2); }
 
 .demo-banner { position: sticky; z-index: 15; top: 0; min-height: 52px; padding: 8px max(20px, calc((100vw - 1180px) / 2)); display: flex; align-items: center; gap: 12px; background: var(--yellow); color: var(--ink); border-bottom: 1px solid #9e7700; font-size: 14px; }
-.demo-banner strong { white-space: nowrap; }.demo-banner span { margin-right: auto; }.demo-banner .quiet-button { min-height: 40px; padding-block: 8px; border-color: var(--ink); background: rgba(255,255,255,.45); color: var(--ink); }
+.demo-banner strong { white-space: nowrap; }.demo-banner span { margin-right: auto; }.demo-banner .quiet-button { min-height: 44px; padding-block: 8px; border-color: var(--ink); background: rgba(255,255,255,.45); color: var(--ink); }
 main { overflow: clip; }
 .hero { width: min(1180px, calc(100% - 40px)); min-height: 690px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, .82fr) minmax(450px, 1.18fr); align-items: center; gap: clamp(40px, 7vw, 96px); padding: 72px 0 94px; }
 .hero-copy { padding-left: 32px; border-left: 1px solid var(--rule); position: relative; }
@@ -169,13 +169,15 @@ kbd { display: inline-block; min-width: 26px; margin-right: 3px; padding: 2px 5p
 .settings summary { min-height: 54px; padding: 13px 0; cursor: pointer; font-weight: 700; }.settings-body { padding-bottom: 24px; }.settings .secondary-button { color: white; border-color: #a8cdd3; }.settings .danger-button { color: #ffd3d6; border-color: #f59ba3; }.file-button { cursor: pointer; }.file-button input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 
 .supporter { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 100px 0; display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(40px, 8vw, 100px); align-items: start; }
-.supporter h2 { max-width: 15ch; }.supporter > div > p:not(.eyebrow) { color: var(--muted); }.legal-copy { font-size: 14px; }
+.supporter h2 { max-width: 15ch; }.supporter > div > p:not(.eyebrow) { color: var(--muted); }.legal-copy { margin-bottom: 4px; font-size: 14px; }
+.supporter-legal { display: flex; gap: 12px; }
+.supporter-legal a { min-width: 64px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
 .purchase-panel { padding: 28px; border: 1px solid var(--rule); background: var(--sheet); box-shadow: 10px 10px 0 var(--hairline); }.purchase-panel > .primary-button { width: 100%; }.purchase-panel.is-unlocked { border-top: 8px solid var(--success); }
 #restore-form { margin-top: 28px; }.purchase-panel label { display: block; margin-bottom: 8px; font-weight: 700; }.purchase-panel form > div { display: grid; grid-template-columns: 1fr auto; gap: 8px; }.purchase-panel input { min-width: 0; min-height: 48px; padding: 10px 12px; border: 1px solid var(--rule); background: white; color: var(--ink); }.purchase-panel p { margin-bottom: 0; color: var(--muted); font-size: 14px; }
 
 footer { padding: 44px max(20px, calc((100vw - 1180px) / 2)); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 30px; border-top: 1px solid var(--rule); background: var(--sheet); color: var(--muted); font-size: 14px; }.footer-brand { font-size: 16px; color: var(--ink); }footer p { margin: 0; }footer nav { display: flex; gap: 20px; }footer nav a { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }.generated-note { grid-column: 2 / -1; font: 10px 'IBM Plex Mono', monospace; text-transform: uppercase; }
 .toast { position: fixed; z-index: 20; right: max(18px, env(safe-area-inset-right)); bottom: max(18px, env(safe-area-inset-bottom)); padding: 10px 10px 10px 18px; display: flex; gap: 20px; align-items: center; background: var(--ink); color: white; box-shadow: 6px 6px 0 var(--yellow); }.toast button { min-height: 44px; background: var(--yellow); border: 0; color: var(--ink); }
-.legal-page { width: min(800px, calc(100% - 40px)); min-height: 70vh; margin: 0 auto; padding: 72px 0 100px; }.legal-page h1 { max-width: 13ch; }.legal-page h2 { margin-top: 50px; font-size: 26px; letter-spacing: -.02em; }.legal-page p:not(.eyebrow) { max-width: 62ch; }.legal-page .text-link { display: inline-block; margin-top: 36px; font-weight: 700; }
+.legal-page { width: min(800px, calc(100% - 40px)); min-height: 70vh; margin: 0 auto; padding: 72px 0 100px; }.legal-page h1 { max-width: 13ch; }.legal-page h2 { margin-top: 50px; font-size: 26px; letter-spacing: -.02em; }.legal-page p:not(.eyebrow) { max-width: 62ch; }.legal-page a { min-height: 44px; display: inline-flex; align-items: center; }.legal-page .text-link { margin-top: 36px; font-weight: 700; }
 
 @media (max-width: 800px) {
   .hero { min-height: 0; grid-template-columns: 1fr; gap: 58px; padding: 52px 0 72px; }

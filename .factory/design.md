@@ -37,6 +37,7 @@ Controls and overlays settle over 180–240 ms using opacity and transform only,
 ## Asset plan and provenance
 
 - Hero: an original editorial still-life showing an open children's book on a cyan drafting mat with a phone acting as a precise yellow reading guide. It explains the physical-book relationship without pretending to show live OCR. Served as responsive WebP with explicit dimensions; mobile variant is ≤300 KB.
+- Social preview: `page-pointer-social-1200x630.jpg`, a deterministic center crop of the approved original hero. It adds no generated content and preserves the same prompt provenance.
 - Icons, crosshairs, grid, word aperture, and PWA marks are hand-authored SVG/CSS so they remain sharp and match the instrument language.
 - Generated imagery disclosure appears in the footer.
 
@@ -45,4 +46,3 @@ Controls and overlays settle over 180–240 ms using opacity and transform only,
 Use case: `product-mockup`. Asset type: landing-page instructional hero. Subject: a modern unbranded smartphone held just above an open illustrated children's book, viewed from a close oblique top-down angle; on the phone screen, a simple bright yellow horizontal reading ruler aligned with one printed line, with no legible interface text. World: quiet family reading table treated like an architect's drafting station. Materials: pale cyan gridded cutting mat, cream paper, graphite pencil, translucent amber ruler. Light: soft late-afternoon window light, precise gentle shadows. Lens/composition: 4:3 editorial product photograph, phone and book centered-right, clear negative space at upper-left, believable hand-free arrangement. Palette words: blueprint cyan, cream paper, deep petrol ink, signal yellow. Avoid: people, hands, faces, brands, logos, watermarks, readable text, gibberish lettering, scanning beams, futuristic holograms, medical symbolism, clutter, distorted phone or book.
 
 Generated with the factory `factory-image` deployment on 2026-08-28. The final image is original project artwork; prompt sidecar is kept in `assets/src/`.
-

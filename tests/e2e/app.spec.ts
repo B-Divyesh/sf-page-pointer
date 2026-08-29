@@ -7,10 +7,23 @@ test('@claim:demo-sandbox the direct sample demo opens a usable guide in its own
   await page.goto('/demo');
   await expect(page).toHaveTitle('Demo — Page Pointer');
   await expect(page.getByRole('complementary', { name: 'Demo controls' })).toContainText('Demo — sample data, nothing is saved');
-  await expect(page.getByRole('heading', { name: 'Place the pointer' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Place the guide' })).toBeVisible();
   await expect(page.locator('#focus-guide')).toHaveClass(/is-visible/);
+  const initialWordWidth = await page.locator('#focus-guide').evaluate((element) => element.getBoundingClientRect().width);
+  await page.locator('.demo-page p').nth(1).locator('span').first().click();
+  await expect(page.locator('#coordinate-label')).toContainText('LINE 02 · WORD 01');
   await page.getByRole('button', { name: 'Next word' }).click();
-  await expect(page.locator('#coordinate-label')).toContainText('WORD');
+  await expect(page.locator('#coordinate-label')).toContainText('LINE 02 · WORD 02');
+  await page.getByRole('button', { name: 'Previous word' }).click();
+  await expect(page.locator('#coordinate-label')).toContainText('LINE 02 · WORD 01');
+  await page.locator('#viewfinder').focus();
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press(' ');
+  await expect(page.locator('#coordinate-label')).toContainText('LINE 02 · WORD 03');
+  await page.getByRole('button', { name: 'Line' }).click();
+  await expect(page.getByRole('button', { name: 'Line' })).toHaveAttribute('aria-pressed', 'true');
+  await page.waitForTimeout(300);
+  expect(await page.locator('#focus-guide').evaluate((element) => element.getBoundingClientRect().width)).toBeGreaterThan(initialWordWidth);
   await page.waitForTimeout(3_100);
   await page.getByRole('button', { name: 'Close guide' }).click();
   const names = await page.evaluate(async () => (await indexedDB.databases()).map((database) => database.name));
@@ -76,7 +89,7 @@ test('@claim:offline-demo the sample guide works offline after the first visit',
   await page.goto('/?demo=1');
   await page.evaluate(async () => { await navigator.serviceWorker.ready; });
   await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
-  await page.waitForFunction(async () => (await caches.keys()).some((key) => key.includes('page-pointer-v1.1.1-shell')));
+  await page.waitForFunction(async () => (await caches.keys()).some((key) => key.includes('page-pointer-v1.1.2-shell')));
   await page.evaluate(async () => { await document.fonts.ready; });
   expect(await page.evaluate(() => document.fonts.size)).toBe(3);
   expect(await page.evaluate(() => [...document.fonts].every((font) => font.status === 'loaded'))).toBe(true);
@@ -97,14 +110,13 @@ test('@claim:offline-demo the sample guide works offline after the first visit',
   await expect(page.locator('#coordinate-label')).toContainText('WORD');
 });
 
-test('@claim:free-guide-and-price parents and tutors can try the complete core guide without an account', async ({ page }) => {
+test('@claim:free-core parents and tutors can try the complete core guide without an account', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByText('No account needed.')).toBeVisible();
   await expect(page.getByRole('heading', { name: /Keep emerging readers/ })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Try it with sample data' })).toHaveAttribute('href', '/demo');
-  await expect(page.getByRole('link', { name: /Buy once.*₹249/ })).toBeVisible();
   await page.getByRole('link', { name: 'Try it with sample data' }).click();
-  await expect(page.getByRole('heading', { name: 'Place the pointer' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Place the guide' })).toBeVisible();
 });
 
 test('keyboard users can reach the skip link and advance the sample guide', async ({ page }) => {
@@ -133,12 +145,34 @@ test('home, demo, legal pages, and the static 404 have no serious accessibility 
     page.on('console', onConsole);
     page.on('pageerror', onPageError);
     await page.goto(path);
+    const expectedTitle = path === '/' ? 'Page Pointer — follow words in physical books'
+      : path === '/demo' ? 'Demo — Page Pointer'
+        : path === '/privacy' ? 'Privacy — Page Pointer'
+          : path === '/terms' ? 'Terms — Page Pointer' : 'Page not found — Page Pointer';
+    await expect(page).toHaveTitle(expectedTitle);
+    if (path !== '/404.html') {
+      const canonicalPath = path === '/' ? '/' : path;
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://page-pointer.sociobot.in${canonicalPath}`);
+    }
     const results = await new AxeBuilder({ page }).analyze();
     const serious = results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''));
     expect(serious, `${path}: ${serious.map((item) => item.id).join(', ')}`).toEqual([]);
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('main')).toHaveCount(1);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+    const smallTargets = await page.locator('a,button,summary,label.file-button').evaluateAll((elements) => elements.flatMap((element) => {
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      if (style.display === 'none' || style.visibility === 'hidden' || !rect.width || !rect.height) return [];
+      return rect.width < 44 || rect.height < 44 ? [{ text: element.textContent?.trim(), width: rect.width, height: rect.height }] : [];
+    }));
+    expect(smallTargets, `${path}: interactive targets below 44px`).toEqual([]);
+    if (path === '/404.html') {
+      await page.keyboard.press('Tab');
+      await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused();
+      await expect(page.locator('footer').getByRole('link', { name: 'Privacy' })).toBeVisible();
+      await expect(page.locator('footer')).toContainText('v1.1.2');
+    }
     expect([consoleErrors, pageErrors]).toEqual([[], []]);
     page.off('console', onConsole);
     page.off('pageerror', onPageError);

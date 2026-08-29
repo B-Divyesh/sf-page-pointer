@@ -1,37 +1,72 @@
 [
   {
     "id": "demo-sandbox",
-    "claim": "Try it with sample data opens a working sample guide without using real reading data.",
-    "where": "landing action and /demo banner",
+    "claim": "The sample guide uses separate demo data and supports tap, word or line mode, Next, Previous, Arrow keys, and Space.",
+    "where": "landing demo action, guide controls, README",
     "test": "npm run test:e2e -- --grep @claim:demo-sandbox",
-    "sandbox": "fresh browser context opens /demo, moves the guide, records a sample session, and asserts only demo:page-pointer exists"
+    "sandbox": "fresh /demo context places and moves the sample guide with every public control, records a session, and asserts only demo:page-pointer exists"
   },
   {
     "id": "demo-reset",
     "claim": "Demo data can be reset or discarded before starting for real.",
-    "where": "/demo banner",
+    "where": "/demo banner and README",
     "test": "npm run test:e2e -- --grep @claim:demo-reset",
     "sandbox": "fresh /demo context records a sample session, resets it, verifies an empty demo store, then starts real mode"
   },
   {
+    "id": "local-ink-detection",
+    "claim": "Page Pointer groups local contrasting pixels into printed lines and word-like boxes without reading the text.",
+    "where": "How it works, privacy section, README",
+    "test": "npm test -- --testNamePattern @claim:local-ink-detection",
+    "sandbox": "synthetic two-line pixel fixture is processed in memory and produces multiple word boxes without any browser or network API"
+  },
+  {
+    "id": "camera-states",
+    "claim": "The guide requests the rear camera without sending frames, saves a brief summary, releases the stream, and explains recovery states.",
+    "where": "Open camera flow, privacy copy, error states, README",
+    "test": "npm run test:e2e -- --grep @claim:camera-states",
+    "sandbox": "fresh demo-to-real context records requests and a camera summary, then uses a blank frame, denied permission fixture, and missing-camera fixture"
+  },
+  {
     "id": "local-only-reading",
-    "claim": "Frames stay on this device and the exported reading data contains no page image or recognized text.",
-    "where": "landing facts and privacy section",
+    "claim": "Reading sends no third-party request, and exported data contains no page image or recognized text.",
+    "where": "landing facts, privacy section, Privacy page, README",
     "test": "npm run test:e2e -- --grep @claim:local-only-reading",
-    "sandbox": "fresh /demo context records every request and inspects the exported JSON"
+    "sandbox": "fresh /demo context records every request and inspects the complete exported JSON"
+  },
+  {
+    "id": "local-data-roundtrip",
+    "claim": "Users can import, export, and erase local preferences and up to 50 brief session summaries.",
+    "where": "Local data settings, Privacy page, README",
+    "test": "npm run test:e2e -- --grep @claim:local-data-roundtrip",
+    "sandbox": "fresh demo-to-real context imports 54 fixture sessions, exports exactly 50 with preferences, confirms erasure, and exports an empty store"
   },
   {
     "id": "offline-demo",
-    "claim": "The sample guide works offline after its first visit.",
-    "where": "landing facts and README",
+    "claim": "The sample guide and its local fonts work offline after the first visit.",
+    "where": "landing facts, network state, README",
     "test": "npm run test:e2e -- --grep @claim:offline-demo",
-    "sandbox": "fresh /demo context waits for the service worker, goes offline, reloads, and moves the guide"
+    "sandbox": "fresh /demo context waits for the service worker and fonts, goes offline, reloads without failed requests, and moves the guide"
   },
   {
-    "id": "free-guide-and-price",
-    "claim": "The core guide needs no account; the optional Supporter pack costs ₹249 once.",
-    "where": "landing facts and Supporter section",
-    "test": "npm run test:e2e -- --grep @claim:free-guide-and-price",
-    "sandbox": "fresh browser context checks the price and opens the working sample guide without sign-in"
+    "id": "pwa-update",
+    "claim": "The installable app precaches its shell and offers an Update action when a new worker is waiting.",
+    "where": "manifest, update notice, README",
+    "test": "npm run test:e2e -- --grep @claim:pwa-update",
+    "sandbox": "fresh /demo context on a local two-generation server validates the manifest and cache, installs a changed worker, uses Update, and confirms activation"
+  },
+  {
+    "id": "free-core",
+    "claim": "Parents and tutors can use the complete reading guide without an account.",
+    "where": "landing facts, Supporter section, Terms, README",
+    "test": "npm run test:e2e -- --grep @claim:free-core",
+    "sandbox": "fresh context opens the working sample guide without sign-in or a license"
+  },
+  {
+    "id": "paid-supporter",
+    "claim": "The optional Supporter pack costs ₹249 once and adds saved guide colors plus a quiet ten-minute timer.",
+    "where": "Supporter section, Terms, README",
+    "test": "npm run test:e2e -- --grep @claim:paid-supporter",
+    "sandbox": "fresh demo-to-real context uses recorded valid and revoked Sociobot verification responses; it checks token capture, restore, locking, saved color, timer completion, and the exact checkout URL"
   }
 ]

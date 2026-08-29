@@ -3,7 +3,7 @@
   "short_name": "Pointer",
   "description": "A private camera guide for keeping your place in a physical book.",
   "id": "/?source=installed",
-  "start_url": "/?v=1&source=installed",
+  "start_url": "/?v=2&source=installed",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",

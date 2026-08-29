@@ -18,7 +18,7 @@ function syntheticPage(): { data: Uint8ClampedArray; width: number; height: numb
 }
 
 describe('local text geometry', () => {
-  it('groups contrasting ink into lines and word-like boxes', () => {
+  it('@claim:local-ink-detection groups contrasting pixels into lines and word-like boxes without OCR', () => {
     const result = detectText(syntheticPage());
     expect(result.lines).toHaveLength(2);
     expect(result.lines[0].words.length).toBeGreaterThanOrEqual(3);
