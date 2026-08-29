@@ -18,13 +18,24 @@ export interface PagePointerData {
   exportedAt: string;
 }
 
-const DB_NAME = 'page-pointer';
+const REAL_DB_NAME = 'page-pointer';
+const DEMO_DB_NAME = 'demo:page-pointer';
 const STORE = 'local-data';
 const DEFAULTS: Preferences = { mode: 'word', guideColor: '#F7C948', thickness: 12 };
+let storageNamespace: 'real' | 'demo' = 'real';
+
+/** The demo must never read or write a visitor's real reading data. */
+export function setStorageNamespace(namespace: 'real' | 'demo'): void {
+  storageNamespace = namespace;
+}
+
+function databaseName(): string {
+  return storageNamespace === 'demo' ? DEMO_DB_NAME : REAL_DB_NAME;
+}
 
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 1);
+    const request = indexedDB.open(databaseName(), 1);
     request.onupgradeneeded = () => request.result.createObjectStore(STORE);
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
@@ -35,8 +46,8 @@ async function read<T>(key: string): Promise<T | undefined> {
   const db = await openDatabase();
   return new Promise((resolve, reject) => {
     const request = db.transaction(STORE).objectStore(STORE).get(key);
-    request.onsuccess = () => resolve(request.result as T | undefined);
-    request.onerror = () => reject(request.error);
+    request.onsuccess = () => { const result = request.result as T | undefined; db.close(); resolve(result); };
+    request.onerror = () => { db.close(); reject(request.error); };
   });
 }
 
@@ -45,8 +56,8 @@ async function write<T>(key: string, value: T): Promise<void> {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(STORE, 'readwrite');
     transaction.objectStore(STORE).put(value, key);
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = () => reject(transaction.error);
+    transaction.oncomplete = () => { db.close(); resolve(); };
+    transaction.onerror = () => { db.close(); reject(transaction.error); };
   });
 }
 
@@ -82,7 +93,16 @@ export async function clearData(): Promise<void> {
   const db = await openDatabase();
   await new Promise<void>((resolve, reject) => {
     const request = db.transaction(STORE, 'readwrite').objectStore(STORE).clear();
-    request.onsuccess = () => resolve();
+    request.onsuccess = () => { db.close(); resolve(); };
+    request.onerror = () => { db.close(); reject(request.error); };
+  });
+}
+
+export async function resetDemoData(): Promise<void> {
+  await new Promise<void>((resolvePromise, reject) => {
+    const request = indexedDB.deleteDatabase(DEMO_DB_NAME);
+    request.onsuccess = () => resolvePromise();
     request.onerror = () => reject(request.error);
+    request.onblocked = () => reject(new Error('Close other Page Pointer demo tabs before resetting the demo.'));
   });
 }

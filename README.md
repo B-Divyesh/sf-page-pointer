@@ -4,6 +4,10 @@ Page Pointer is a private, offline-first camera guide for parents, tutors, and e
 
 Live product: <https://page-pointer.sociobot.in>
 
+Try the isolated sample guide at <https://page-pointer.sociobot.in/demo>. It
+opens with *The Small Red Kite*, stores only in `demo:page-pointer`, and lets
+you reset the sample or discard it before starting for real.
+
 ## What v1 includes
 
 - Rear-camera capture with clear permission, denial, no-camera, and low-contrast states.
@@ -32,7 +36,13 @@ npm run test:e2e  # mobile/desktop, axe, keyboard flow, and offline reload
 npm run test:all  # all of the above
 ```
 
-The factory deployment command is exactly `npm ci && npm test && npm run build`; `dist/index.html` is the static entry point. `/privacy` and `/terms` are emitted as static route entry points.
+The factory deployment command is exactly `npm ci && npm test && npm run build`; `dist/index.html` is the static entry point. `/demo`, `/privacy`, and `/terms` are configured static routes. `dist/staticwebapp.config.json` supplies the required deployment headers, cache policy, and 404 response.
+
+## Claims and demo
+
+Every visitor-facing claim is listed in [`.factory/claims.json`](.factory/claims.json)
+with an executable Playwright regression. The sandbox behavior and storage
+namespace are documented in [`.factory/demo.md`](.factory/demo.md).
 
 ## Architecture and privacy
 

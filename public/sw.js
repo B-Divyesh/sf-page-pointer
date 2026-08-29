@@ -1,7 +1,7 @@
-const VERSION = 'page-pointer-v1.0.0';
+const VERSION = 'page-pointer-v1.1.0';
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
-const PRECACHE = ['/', '/index.html', '/offline.html', '/manifest.webmanifest', '/robots.txt', '/assets/mark.svg', '/assets/icon-192.png', '/assets/icon-512.png', '/assets/page-pointer-hero-768.avif', '/assets/page-pointer-hero-1024.avif', '/assets/page-pointer-hero-768.webp', '/assets/page-pointer-hero-1024.webp', '/assets/page-pointer-hero-1536.webp', '/assets/page-pointer-hero-1024.jpg', /* BUILD_ASSETS */];
+const PRECACHE = ['/', '/index.html', '/demo', '/privacy', '/terms', '/offline.html', '/manifest.webmanifest', '/robots.txt', '/assets/mark.svg', '/assets/icon-192.png', '/assets/icon-512.png', '/assets/page-pointer-hero-768.avif', '/assets/page-pointer-hero-1024.avif', '/assets/page-pointer-hero-768.webp', '/assets/page-pointer-hero-1024.webp', '/assets/page-pointer-hero-1536.webp', '/assets/page-pointer-hero-1024.jpg', /* BUILD_ASSETS */];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(SHELL).then((cache) => cache.addAll(PRECACHE)));

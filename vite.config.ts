@@ -1,4 +1,4 @@
-import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
@@ -8,10 +8,12 @@ export default defineConfig({
     sourcemap: true
   },
   plugins: [{
-    name: 'legal-route-entrypoints',
+    name: 'route-entrypoints-and-worker-precache',
     closeBundle() {
       const indexPath = resolve('dist', 'index.html');
       let index = readFileSync(indexPath, 'utf8');
+      // Keep the app shell self-contained for a controlled offline reload. The
+      // hashed files remain available for normal cacheable delivery as well.
       index = index.replace(/<script type="module" crossorigin src="([^"]+)"><\/script>/, (_match, source: string) => {
         const code = readFileSync(resolve('dist', source.replace(/^\//, '')), 'utf8');
         return `<script type="module">${code}</script>`;
@@ -32,6 +34,7 @@ export default defineConfig({
       const workerPath = resolve('dist', 'sw.js');
       const worker = readFileSync(workerPath, 'utf8').replace('/* BUILD_ASSETS */', builtAssets.map((asset) => JSON.stringify(asset)).join(', '));
       writeFileSync(workerPath, worker);
+      copyFileSync(resolve('staticwebapp.config.json'), resolve('dist', 'staticwebapp.config.json'));
     }
   }]
 });

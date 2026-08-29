@@ -55,11 +55,15 @@ img { max-width: 100%; }
 .site-header.compact { max-width: 860px; }
 .brand { display: inline-flex; min-height: 48px; align-items: center; gap: 10px; color: var(--ink); font-weight: 700; text-decoration: none; }
 .brand img { flex: none; }
-.header-tools { display: flex; align-items: center; gap: 12px; }
+.site-nav { display: flex; align-items: center; gap: 16px; margin-left: auto; font-size: 14px; font-weight: 700; }
+.site-nav a { min-height: 44px; display: inline-flex; align-items: center; }
+.header-tools { display: flex; align-items: center; gap: 12px; margin-left: 20px; }
 .network-state { display: inline-flex; gap: 8px; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; }
 .network-state i { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px rgba(23, 107, 82, .12); }
 .network-state.is-offline i { background: var(--yellow); box-shadow: 0 0 0 3px rgba(247, 201, 72, .2); }
 
+.demo-banner { position: sticky; z-index: 15; top: 0; min-height: 52px; padding: 8px max(20px, calc((100vw - 1180px) / 2)); display: flex; align-items: center; gap: 12px; background: var(--yellow); color: var(--ink); border-bottom: 1px solid #9e7700; font-size: 14px; }
+.demo-banner strong { white-space: nowrap; }.demo-banner span { margin-right: auto; }.demo-banner .quiet-button { min-height: 40px; padding-block: 8px; border-color: var(--ink); background: rgba(255,255,255,.45); color: var(--ink); }
 main { overflow: clip; }
 .hero { width: min(1180px, calc(100% - 40px)); min-height: 690px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, .82fr) minmax(450px, 1.18fr); align-items: center; gap: clamp(40px, 7vw, 96px); padding: 72px 0 94px; }
 .hero-copy { padding-left: 32px; border-left: 1px solid var(--rule); position: relative; }
@@ -94,8 +98,9 @@ p { max-width: 68ch; }
 .quiet-button { padding-inline: 14px; min-height: 44px; border-color: var(--rule); background: var(--sheet); color: var(--blue); }
 .quiet-button.light { color: white; border-color: #5e7b82; background: rgba(255,255,255,.05); }
 .danger-button { border-color: var(--danger); background: transparent; color: var(--danger); }
-.privacy-note { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 14px; }
-.privacy-note span { color: var(--success); font-weight: 700; }
+.action-note { margin: 12px 0 0; color: var(--muted); font-size: 14px; }
+.privacy-note { margin: 18px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: 14px; list-style: none; }
+.privacy-note li { display: inline-flex; align-items: center; gap: 6px; }.privacy-note li::before { content: '◎'; color: var(--success); font-weight: 700; }
 .camera-message { min-height: 28px; color: var(--danger); font-size: 15px; }
 .camera-message strong { display: block; }
 
@@ -182,7 +187,8 @@ footer { padding: 44px max(20px, calc((100vw - 1180px) / 2)); display: grid; gri
 
 @media (max-width: 520px) {
   .site-header, .hero, .method, .supporter { width: min(100% - 32px, 1180px); }
-  .site-header { min-height: 64px; }.header-tools .quiet-button { display: none; }.network-state { font-size: 9px; }
+  .site-header { min-height: 64px; gap: 8px; }.site-nav { gap: 10px; margin-left: auto; font-size: 12px; }.header-tools { margin-left: 0; }.header-tools .quiet-button, .network-state { display: none; }
+  .demo-banner { align-items: flex-start; flex-wrap: wrap; padding: 8px 16px; gap: 6px 10px; }.demo-banner strong { flex-basis: 100%; }.demo-banner span { flex: 1 1 160px; }.demo-banner .quiet-button { min-height: 36px; padding: 6px 9px; font-size: 13px; }
   .hero { padding-top: 40px; }.hero-copy { padding-left: 18px; }.hero-actions { display: grid; }.hero-actions > * { width: 100%; }.lede { font-size: 18px; }
   .hero-visual figcaption { font-size: 9px; }.hero-visual::before { inset: -10px 10px 10px -10px; }
   .instrument { padding-inline: 12px; }.instrument-heading { align-items: flex-start; }.instrument-heading h2 { font-size: 24px; }.instrument-help { font-size: 15px; }

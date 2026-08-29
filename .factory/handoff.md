@@ -1,31 +1,31 @@
-# Page Pointer v1 handoff
+# Page Pointer v1.1.0 repair handoff
 
-## Independent verifier verdict — FAIL (2026-08-29)
+## Repair scope
 
-Candidate `610e760e013205391830e878653ca490d74a7c14` at
-https://page-pointer.sociobot.in **must not be released**. The live deployment
-matches the rebuilt candidate byte-for-byte, but mandatory claims are absent,
-the purported demo is neither a direct entry point nor isolated storage, and
-the cold first screen does not name its audience in plain words. Required
-security/caching headers and a real 404 are also missing. See
-`.factory/verification.md` for exact commands, evidence, passing checks, and
-severity-ranked defects. This verifier result supersedes the earlier builder
-verification summary below.
+This repair resolves every finding in independent verification report
+`2dc59acbbc268648d826e1b55489062ba9f3ad89` against candidate
+`610e760e013205391830e878653ca490d74a7c14`.
 
-## Shipped
+- Added `.factory/claims.json` with five executable `@claim:` Playwright
+  regressions. They cover the direct sample demo, reset/discard behavior,
+  local-only reading data, offline use, and free-core/₹249 pricing copy.
+- Made `/demo` and `/?demo=1` direct, immediately usable sample routes. They
+  use only `demo:page-pointer` IndexedDB, never read real reading data, have
+  the required persistent banner, and delete demo data on Reset or Start for
+  real. `.factory/demo.md` documents the sample and namespace.
+- Rewrote the initial screen: it names parents, tutors, and emerging readers,
+  states the physical-book job, and exposes **Try it with sample data** with
+  its outcome. `.factory/copy-audit.md` records the first-screen audit.
+- Added the Static Web Apps configuration with CSP, Permissions-Policy,
+  HSTS, Referrer-Policy, nosniff, immutable hashed-asset caching, manifest
+  media type, explicit `/demo`/legal rewrites, and a real 404 response. The
+  build copies this configuration to `dist/`.
+- Added a styled static 404, complete header navigation (Demo, Privacy,
+  Terms) on every route, sitemap coverage for `/demo`, route-specific demo
+  title, and keyboard regression coverage. Space now advances the guide
+  consistently; Enter remains the viewfinder placement key.
 
-- A responsive rear-camera reading instrument that keeps every frame in a temporary on-device canvas. It estimates printed baselines from local contrast, groups likely words from ink gaps, anchors to the adult's tap, and keeps the selected guide aligned while the camera is live.
-- Word and full-line guides, tap/re-tap orientation, Previous/Next buttons, Arrow/Space keyboard control, Escape-to-close, mobile safe sizing, session stop/cleanup, and honest low-contrast/end-of-page feedback.
-- Camera permission/loading/denial/unavailable states plus a complete no-camera practice page.
-- Local-first preferences and the latest 50 session summaries in IndexedDB, with JSON export/import and confirmed erasure. No images or recognized text are retained.
-- Installable PWA manifest, 192/512 icons, versioned service-worker caches, generated hashed-asset precache, offline fallback, first-page client claim, and an in-app update prompt.
-- Optional ₹249 one-time Supporter pack through the Sociobot license contract: hosted checkout, return-token capture and URL cleanup, daily-cached verification, optimistic offline unlock, restore-by-token, invalid/revoked handling, and staging API selection off the production hostname. The full reading guide and data controls remain free.
-- Static `/privacy` and `/terms` entry points, README, MIT license, sitemap/robots, and no analytics or third-party runtime resources.
-- Product-specific blueprint drafting-sheet system and original generated hero in responsive AVIF/WebP/JPEG variants. Prompt, model/deployment, and date are recorded in `.factory/design.md` and `assets/src/`.
-
-## Verification
-
-Run from `/work/repo`:
+## How to run
 
 ```bash
 npm ci
@@ -34,20 +34,50 @@ npm run build
 npm run test:e2e
 ```
 
-Verified on 2026-08-28:
+The static deployment artifact is `dist/`, with `dist/index.html` at its
+root and `dist/staticwebapp.config.json` alongside it.
 
-- `npm test`: 3/3 local text-geometry tests passed.
-- `npm run build`: passed; `dist/index.html`, `dist/privacy/index.html`, and `dist/terms/index.html` produced.
-- Playwright 1.58.2: 6/6 passed across a 393 px Pixel 5 profile and desktop Chromium, including the full demo interaction, keyboard-safe controls, console check, axe scan, legal routes, and explicit `context.setOffline(true)` reload/use.
-- Fake-device camera smoke test: rear-camera request opened a 1280×720 stream, blank-frame error was announced, and Close stopped the guide.
-- Axe via Playwright: zero serious or critical findings on home, privacy, and terms at both viewport classes.
-- Lighthouse 12.8.2 mobile: Performance 100, Accessibility 100, Best Practices 100, SEO 100. FCP 1.2 s, LCP 1.4 s, CLS 0.034, total blocking time 0 ms.
-- Production payload: 28.34 KB JS, 18.03 KB CSS, about 92 KB of self-hosted font files across modern/fallback formats; mobile hero AVIF 27 KB (WebP 44 KB). The small critical JS/CSS is also inlined into the 46 KB app shell so a controlled offline reload does not depend on subresource timing.
-- `npm audit`: 0 vulnerabilities.
+## Verification evidence
+
+Run after the final clean install on 2026-08-29:
+
+- `npm ci`: passed; `npm audit` reported **0 vulnerabilities**.
+- `npm test`: **4/4** Vitest tests passed, including deployment header/404
+  configuration coverage and the existing text-detection tests.
+- `npm run build`: passed type checking and produced `dist/`; JS is **30.51
+  KB** (**10.94 KB gzip**) and CSS is **19.13 KB** (**5.26 KB gzip**).
+- `npm run test:e2e`: **14/14** passed on Pixel 5 (393 px) and desktop
+  Chromium. It includes all five `@claim:` contracts, direct `/demo`,
+  IndexedDB namespace inspection, Reset/Start-for-real discard behavior,
+  same-origin request recording, JSON export inspection, offline reload,
+  keyboard navigation, and axe scans for home, demo, privacy, terms, and 404.
+  Axe reported zero serious or critical violations.
+- `/opt/fleet/lib/verify-url.sh` against the built local preview returned
+  HTTP 200, zero console/page errors, `lang=en`, one h1, one main landmark,
+  and no images without alt text at desktop and 390 px.
+- Lighthouse 12.8.2 local mobile JSON reported Performance **100**,
+  Accessibility **100**, Best Practices **100**, and SEO **100**; LCP was
+  **1.4 s** and CLS **0.032**. Chrome logged a late target-crash while taking
+  the final screenshot after it wrote the report; the score JSON is retained
+  at `/tmp/page-pointer-lighthouse.json` in this worker.
+- The standalone `@axe-core/cli` was attempted with the supplied Chromium,
+  but Selenium could not create a Chrome session in this container. The
+  repository's `@axe-core/playwright` scan above is the authoritative browser
+  axe evidence and passed at both viewport classes.
+
+## Deployment and live verification
+
+Deploy `dist/` with `/opt/fleet/lib/deploy-static.sh page-pointer dist` after
+the repair commit is pushed. Record the resulting production HTTP/header,
+route, demo, and identity checks below after deployment.
 
 ## Known gaps / next steps
 
-- Automatic placement is a deliberately lightweight contrast heuristic, not OCR. Validate thresholds on a wider set of real books, lighting, page curvature, type sizes, and phone cameras before tuning them; manual tapping and stepping are the supported fallback.
-- The brief's success measure needs 20 real family sessions and parent-reported re-orientation counts. That field study was not available in this build environment.
-- The factory still needs to register the `page-pointer` paid product and set its return URL. Non-production hosts intentionally use `pilot-api.sociobot.in`; the production hostname switches to `api.sociobot.in` automatically.
-- iOS/Android install and rear-camera behavior should receive a final physical-device pass even though mobile Chromium, denied-camera behavior, and fake-camera acquisition were exercised here.
+- Detection remains a deliberately lightweight local contrast heuristic, not
+  OCR. It should be tested with more real pages, lighting, curvature, and
+  phone cameras; manual tapping and stepping remain the supported fallback.
+- The brief's family field study (20 sessions and parent re-orientation data)
+  cannot be completed in this build environment.
+- The factory still needs to register the `page-pointer` paid product and its
+  return URL before real sales. Production uses the Sociobot billing API only
+  on the production hostname; non-production uses the pilot API.

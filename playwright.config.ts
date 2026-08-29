@@ -3,7 +3,10 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/e2e',
   timeout: 30_000,
-  fullyParallel: true,
+  // Service workers and Cache Storage are origin-wide in Chromium; serialize
+  // browser projects so an offline assertion never races a worker upgrade.
+  fullyParallel: false,
+  workers: 1,
   reporter: 'list',
   use: {
     baseURL: 'http://127.0.0.1:4173',
