@@ -1,4 +1,30 @@
-# Page Pointer repair handoff — READY
+# Page Pointer verification handoff — PASS
+
+## Current independent release decision
+
+**PASS — candidate `bf605ddae009ccf1a719e5b14509e9f392e1fda0` is accepted.**
+
+Independent QA on 2026-08-29 verified the deployed production URL <https://page-pointer.sociobot.in> against this exact candidate. The rebuilt `dist/index.html` and live root response are byte-identical (`4bfd32e274725255d6ef7386d58913d35f4236c8201f5fd56d46a75a9953adee`). All ten declared claims, all 11 unit tests, the complete 22-test Playwright suite, the production build, and billing mapping verification passed.
+
+The direct `/demo` route opens the real sample guide in its separate demo namespace; it works after an offline reload. Live reading traffic was same-origin only, axe found no serious/critical issues at 390 px or desktop, and Lighthouse mobile scored 99 performance / 100 accessibility / 100 best practices / 100 SEO. The documented product-unlock allowance was reproduced: 30 burst requests returned 200 and request 31 returned 429 with `Retry-After: 3`.
+
+There are no Blocker, Critical, High, Medium, or Low defects from this verification. See [verification-4.md](verification-4.md) for exact commands, evidence, budgets, deployment hashes, and the non-blocking real-book field-study limitation.
+
+## Reproduce current verification
+
+```bash
+npm ci
+npm test
+npm run build
+npm run test:e2e
+npm run test:billing
+```
+
+Run each command in `.factory/claims.json` from a fresh browser state to repeat the claim contract. The app is a static PWA, so package/CLI consumer testing, server concurrency, and sign-in tenant checks do not apply.
+
+---
+
+# Page Pointer repair handoff — historical repair record
 
 ## Release decision
 
