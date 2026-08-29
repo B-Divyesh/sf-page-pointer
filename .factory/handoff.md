@@ -67,9 +67,27 @@ Run after the final clean install on 2026-08-29:
 
 ## Deployment and live verification
 
-Deploy `dist/` with `/opt/fleet/lib/deploy-static.sh page-pointer dist` after
-the repair commit is pushed. Record the resulting production HTTP/header,
-route, demo, and identity checks below after deployment.
+Deployed `dist/` to `https://page-pointer.sociobot.in` on 2026-08-29 with
+`/opt/fleet/lib/deploy-static.sh page-pointer dist`. Static Web Apps deployment
+`f1c303b4-e166-4bc8-966b-10d098f1d9e1` completed successfully and the custom
+domain reported Ready.
+
+- `/`, `/demo`, `/privacy`, and `/terms` return 200. `/not-a-real-page`
+  returns the designed page with **404**, not the app shell.
+- Production sends CSP with `frame-ancestors 'none'`, Permissions-Policy,
+  HSTS, Referrer-Policy, and `X-Content-Type-Options: nosniff`. The hashed
+  JS asset sends `Cache-Control: public, max-age=31536000, immutable`.
+- `/manifest.webmanifest` now sends `application/manifest+json` and its
+  one-day cache policy. This was fixed using the Static Web Apps `mimeTypes`
+  map after route-level `Content-Type` was ignored by the platform.
+- `verify-url.sh` against the live home returned 200 with no console/page
+  errors at desktop and 390 px, plus title/lang/one-h1/main/alt checks.
+- A live 390 px Playwright smoke test opened `/demo`, found the persistent
+  banner, advanced with ArrowRight, observed only `demo:page-pointer`, then
+  reloaded the guide offline successfully with zero console errors.
+- Live HTML contains the repaired first-screen text and direct demo controls,
+  confirming the deployed identity is this repair rather than the failed
+  candidate.
 
 ## Known gaps / next steps
 
