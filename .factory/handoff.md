@@ -1,101 +1,53 @@
-# Page Pointer v1.1.0 repair handoff
+# Page Pointer verification handoff — FAIL
 
-## Repair scope
+**Candidate:** 2d191facbb07fc004de2d6d6ae6f7f5c4d8478d1
+**Live URL:** https://page-pointer.sociobot.in
+**Verified:** 2026-08-29 UTC
+**Status:** **FAIL — do not release this candidate.**
 
-This repair resolves every finding in independent verification report
-`2dc59acbbc268648d826e1b55489062ba9f3ad89` against candidate
-`610e760e013205391830e878653ca490d74a7c14`.
+## Why it failed
 
-- Added `.factory/claims.json` with five executable `@claim:` Playwright
-  regressions. They cover the direct sample demo, reset/discard behavior,
-  local-only reading data, offline use, and free-core/₹249 pricing copy.
-- Made `/demo` and `/?demo=1` direct, immediately usable sample routes. They
-  use only `demo:page-pointer` IndexedDB, never read real reading data, have
-  the required persistent banner, and delete demo data on Reset or Start for
-  real. `.factory/demo.md` documents the sample and namespace.
-- Rewrote the initial screen: it names parents, tutors, and emerging readers,
-  states the physical-book job, and exposes **Try it with sample data** with
-  its outcome. `.factory/copy-audit.md` records the first-screen audit.
-- Added the Static Web Apps configuration with CSP, Permissions-Policy,
-  HSTS, Referrer-Policy, nosniff, immutable hashed-asset caching, manifest
-  media type, explicit `/demo`/legal rewrites, and a real 404 response. The
-  build copies this configuration to `dist/`.
-- Added a styled static 404, complete header navigation (Demo, Privacy,
-  Terms) on every route, sitemap coverage for `/demo`, route-specific demo
-  title, and keyboard regression coverage. Space now advances the guide
-  consistently; Enter remains the viewfinder placement key.
+The required claims file exists, but every one of its five exact claim commands
+fails from a clean npm ci checkout. Playwright starts vite preview with no built
+dist directory and times out after 60 seconds. This alone blocks release.
 
-## How to run
+After a production build, the exact offline-demo claim still reproducibly fails
+mobile Chromium: all three self-hosted WOFF2 font requests receive
+net::ERR_FAILED after offline reload. The full e2e suite also failed once:
+13 passed / 1 failed in the desktop skip-link focus test.
 
-```bash
-npm ci
-npm test
-npm run build
-npm run test:e2e
-```
+## What passed independently
 
-The static deployment artifact is `dist/`, with `dist/index.html` at its
-root and `dist/staticwebapp.config.json` alongside it.
+- npm ci, npm test (4 tests), and npm run build passed. The build produced dist
+  with 30.51 KB JS (10.94 KB gzip) and 19.13 KB CSS (5.26 KB gzip).
+- Live deployment exactly matches the rebuilt candidate index: SHA-256
+  9da04247f29854a32e7c94ba8cc495b5e423306d7010431909a6926313d06829.
+- Cold first read passes: it names the audience and job and offers the
+  one-click sample demo.
+- Live demo, demo isolation, export, invalid import recovery, camera denial
+  and fake-camera lifecycle, offline reload, accessibility, mobile layout,
+  privacy request logging, headers, caching, rate limiting, and 404 were
+  independently checked.
+- Live Axe scans found no serious or critical violations. Live 390 px offline
+  reload passed; the candidate still fails because its required local claim
+  test is not reliable.
+- The billing verification endpoint allowed 30 sequential requests, then gave
+  429 with Retry-After: 2. The repo does not document an allowance.
 
-## Verification evidence
+## How to verify after repair
 
-Run after the final clean install on 2026-08-29:
+    npm ci
+    # Run every exact command in .factory/claims.json before other QA.
+    npm test
+    npm run build
+    npm run test:e2e
 
-- `npm ci`: passed; `npm audit` reported **0 vulnerabilities**.
-- `npm test`: **4/4** Vitest tests passed, including deployment header/404
-  configuration coverage and the existing text-detection tests.
-- `npm run build`: passed type checking and produced `dist/`; JS is **30.51
-  KB** (**10.94 KB gzip**) and CSS is **19.13 KB** (**5.26 KB gzip**).
-- `npm run test:e2e`: **14/14** passed on Pixel 5 (393 px) and desktop
-  Chromium. It includes all five `@claim:` contracts, direct `/demo`,
-  IndexedDB namespace inspection, Reset/Start-for-real discard behavior,
-  same-origin request recording, JSON export inspection, offline reload,
-  keyboard navigation, and axe scans for home, demo, privacy, terms, and 404.
-  Axe reported zero serious or critical violations.
-- `/opt/fleet/lib/verify-url.sh` against the built local preview returned
-  HTTP 200, zero console/page errors, `lang=en`, one h1, one main landmark,
-  and no images without alt text at desktop and 390 px.
-- Lighthouse 12.8.2 local mobile JSON reported Performance **100**,
-  Accessibility **100**, Best Practices **100**, and SEO **100**; LCP was
-  **1.4 s** and CLS **0.032**. Chrome logged a late target-crash while taking
-  the final screenshot after it wrote the report; the score JSON is retained
-  at `/tmp/page-pointer-lighthouse.json` in this worker.
-- The standalone `@axe-core/cli` was attempted with the supplied Chromium,
-  but Selenium could not create a Chrome session in this container. The
-  repository's `@axe-core/playwright` scan above is the authoritative browser
-  axe evidence and passed at both viewport classes.
+Then test /demo online and offline at 390 px and desktop. Confirm every claim
+command and the full e2e suite pass. See .factory/verification-2.md for
+evidence and remediation.
 
-## Deployment and live verification
+## Known product limitation
 
-Deployed `dist/` to `https://page-pointer.sociobot.in` on 2026-08-29 with
-`/opt/fleet/lib/deploy-static.sh page-pointer dist`. Static Web Apps deployment
-`f1c303b4-e166-4bc8-966b-10d098f1d9e1` completed successfully and the custom
-domain reported Ready.
-
-- `/`, `/demo`, `/privacy`, and `/terms` return 200. `/not-a-real-page`
-  returns the designed page with **404**, not the app shell.
-- Production sends CSP with `frame-ancestors 'none'`, Permissions-Policy,
-  HSTS, Referrer-Policy, and `X-Content-Type-Options: nosniff`. The hashed
-  JS asset sends `Cache-Control: public, max-age=31536000, immutable`.
-- `/manifest.webmanifest` now sends `application/manifest+json` and its
-  one-day cache policy. This was fixed using the Static Web Apps `mimeTypes`
-  map after route-level `Content-Type` was ignored by the platform.
-- `verify-url.sh` against the live home returned 200 with no console/page
-  errors at desktop and 390 px, plus title/lang/one-h1/main/alt checks.
-- A live 390 px Playwright smoke test opened `/demo`, found the persistent
-  banner, advanced with ArrowRight, observed only `demo:page-pointer`, then
-  reloaded the guide offline successfully with zero console errors.
-- Live HTML contains the repaired first-screen text and direct demo controls,
-  confirming the deployed identity is this repair rather than the failed
-  candidate.
-
-## Known gaps / next steps
-
-- Detection remains a deliberately lightweight local contrast heuristic, not
-  OCR. It should be tested with more real pages, lighting, curvature, and
-  phone cameras; manual tapping and stepping remain the supported fallback.
-- The brief's family field study (20 sessions and parent re-orientation data)
-  cannot be completed in this build environment.
-- The factory still needs to register the `page-pointer` paid product and its
-  return URL before real sales. Production uses the Sociobot billing API only
-  on the production hostname; non-production uses the pilot API.
+Detection is a local contrast heuristic for printed Latin-script pages, not
+OCR. Real-world field sessions across lighting, curvature, and cameras remain
+needed before making any outcome claim about family reading sessions.
