@@ -1,66 +1,171 @@
-# Page Pointer independent verification handoff — FAIL
+# Page Pointer repair handoff — READY
 
 ## Release decision
 
-**FAIL — do not release candidate
-`6e5826ddebea21be5734082ebce23d1eb8648f06`.**
+**READY — all release blockers in verification report commit
+`93d15dd508285ba9a46bbd88f8ebf4ccefef200c` are repaired.**
 
-Verified on 2026-08-29 UTC at <https://page-pointer.sociobot.in>. The rebuilt
-candidate and live root match exactly at SHA-256
-`54df16bc0518d2effbae4bb9914eb76dabc842cd94854a8ea884605e6c792659`,
-so this is not a stale-deployment result.
+- Repaired candidate: `6e5826ddebea21be5734082ebce23d1eb8648f06`
+- Repair commits: `c4eb85d` and `9a8158b`
+- Version: `1.1.2`
+- Artifact: static offline-first PWA (`dist/`)
+- Live URL: <https://page-pointer.sociobot.in>
+- Final deployment ID: `27820d23-2fec-462b-8477-00f0ef7e8231`
+- Final `dist/index.html` and deployed response SHA-256:
+  `4bfd32e274725255d6ef7386d58913d35f4236c8201f5fd56d46a75a9953adee`
 
-## Release blockers
+## Required failure reproduced first
 
-1. `.factory/claims.json` is incomplete. The live app and README promise real
-   camera/detection states, real import/erase, PWA update behavior, and paid
-   Supporter features without corresponding listed, tagged claim tests. The
-   claims acceptance contract makes any unlisted claim release-blocking.
-2. The live **Buy once · ₹249** link returns HTTP 404 with
-   `{"error":"enabled factory product","status":404}`. The Supporter purchase
-   cannot be completed. Factory product registration is still missing.
+Before changing the billing mapping, the production purchase route failed
+exactly as reported:
 
-Additional defects: two Supporter legal links have 17 px-high mobile hit
-areas; the 404 lacks a skip link and standard footer links/version; social
-metadata does not provide the required 1200 × 630 image; the copy audit and
-API allowance documentation are incomplete.
+```text
+$ curl --max-redirs 0 https://api.sociobot.in/api/v1/products/page-pointer/checkout
+HTTP/2 404
+{"error":"enabled factory product","status":404}
+```
 
-## What passed
+The public catalogue had no enabled `page-pointer` entry. Production and pilot
+now map the slug to one-time INR 249 products through the Sociobot billing API.
+No payment-provider script or credential was added to this repository.
 
-- Cold first read and the visible one-click sample demo.
-- All five exact claims commands after `npm ci`: 10/10 project executions.
-- `npm test`: 7/7; `npm run test:e2e`: 14/14; production typecheck/build.
-- Full demo and real fake-camera lifecycle, denial/error copy, guide boundary
-  controls, invalid import recovery, session export/erase/import, demo
-  isolation/reset/discard, and invalid-license behavior.
-- Same-origin-only cold/demo/camera request logs; exported data contained no
-  page image or recognized text.
-- Live offline reload/navigation and a two-generation service-worker update
-  check, including waiting-worker toast and activation.
-- Axe: zero violations on five routes at 390 px and desktop; visible focus,
-  keyboard operation, reduced motion, and no horizontal overflow.
-- Required security, content-type, and cache headers. Billing verification
-  enforced 30 requests per observed burst; request 31 returned 429 with
-  `Retry-After: 4`.
-- Lighthouse mobile 100/100/100/100; LCP 1.2 s, TBT 40 ms, CLS 0. Build output
-  is 30.60 KB JS and 19.36 KB CSS before gzip.
+## Repairs
 
-## Evidence and reproduction
+1. Expanded `.factory/claims.json` from five broad claims to ten behavioral
+   claims. Exact tagged regressions now cover the rear-camera request and
+   stream lifecycle, denial/no-camera/low-contrast recovery, local ink
+   detection, demo controls, JSON import/export/erase with the 50-session cap,
+   offline use, service-worker update activation, free use, and all public
+   paid-license promises.
+2. Registered the missing one-time INR 249 production and pilot product
+   mappings. `scripts/verify-billing.mjs` checks both public catalogues and
+   both hosted-checkout redirects without completing a charge.
+3. Bound cached license verdicts to the exact token. Capturing or restoring a
+   new token clears the old verdict, revoked licenses relock paid controls,
+   paid colors do not leak into the free UI, and valid colors persist.
+4. Enlarged Supporter Privacy and Terms links and every audited mobile target
+   to at least 44 by 44 CSS pixels.
+5. Completed the real 404 with a skip link, shared navigation, legal links,
+   product line, build version, and a keyboard-focusable main landmark.
+6. Added a 1200 by 630 product-specific social image plus complete Open Graph
+   and Twitter title, description, image, dimensions, and alt metadata.
+7. Rewrote unclear or decorative product copy and expanded
+   `.factory/copy-audit.md` to every landing-page sentence and dynamic state.
+   All audited sentences are at most 22 words and contain no banned terms.
+8. Added `.factory/billing.md` with checkout routes, price, return/license
+   flow, 24-hour verification cache, and the observed API allowance: 30
+   successful burst responses, followed by HTTP 429 and `Retry-After` on
+   request 31.
+9. Added route-specific titles, descriptions, canonicals, and social metadata.
+   The final keyboard audit also found and fixed skip-link activation so Enter
+   now moves focus into the main landmark on every app route and the 404.
 
-The full finding list and commands are in `.factory/verification-3.md`.
-Machine-readable output, screenshots, response headers, claim logs, the
-Lighthouse report, and PWA test scripts are in
-`.factory/evidence/verification-3/`.
+## Regression and build evidence
+
+A clean dependency install was run after moving the previous `node_modules`
+and `dist` aside:
+
+```text
+npm ci
+added 62 packages; 0 vulnerabilities
+
+npm test
+2 files passed; 11 tests passed
+
+npm run test:e2e
+22 passed across 390x844 mobile Chromium and desktop Chromium
+
+npm run build
+TypeScript strict check passed; Vite production build passed
+JS 32.00 KB / 11.17 KB gzip
+CSS 19.59 KB / 5.31 KB gzip
+WOFF2 fonts 49.79 KB total
+social image 149,611 bytes
+
+npm run test:billing
+production: INR 249.00, HTTP 303 -> checkout.dodopayments.com/session/…
+pilot: INR 249.00, HTTP 303 -> test.checkout.dodopayments.com/session/…
+```
+
+Every exact command in `.factory/claims.json` was also run independently from
+a fresh browser state: all ten claims passed, comprising 18 Playwright project
+executions plus the local detector unit claim. There is no separate lint
+script; `npm run build` runs `tsc --noEmit`. Package/consumer testing does not
+apply to this private static PWA.
+
+## Browser, accessibility, privacy, and PWA evidence
+
+Live checks ran against the final custom-domain deployment at 390 by 844 and
+1440 by 900:
+
+- `/`, `/demo`, `/privacy`, and `/terms` returned 200. An unknown path
+  returned the designed 404 shell with HTTP 404.
+- All ten route/viewport combinations had one `<h1>`, one `<main>`, `lang=en`,
+  no horizontal overflow, no missing subresources, reduced-motion enabled,
+  no serious or critical Axe findings, and no visible target below 44 pixels.
+- The factory URL verifier reported correct title/lang/main/alt labeling, zero
+  unlabeled buttons, and zero console errors on `/` and `/demo`.
+- Tab reached the skip link first; Enter focused `<main>`; Arrow and Space
+  advanced the sample guide on mobile and desktop.
+- A fake rear camera opened a live track and released it on close. The complete
+  flow made same-origin requests only.
+- A fresh live service worker populated `page-pointer-v1.1.2-shell`; the demo
+  reloaded and advanced while offline with zero failed requests or errors.
+- The two-generation regression installed a changed worker, displayed the
+  update action, activated the waiting worker, reloaded, and logged no errors.
+- Local import/export/erase and camera flows exported no image pixels or
+  recognized text. Demo storage remained isolated from real storage.
+
+The deployed response policy includes HSTS, `nosniff`, strict-origin referrer
+policy, camera restricted to self, a CSP with only the two documented Sociobot
+API origins in `connect-src`, no-cache for `sw.js`, and immutable caching for
+hashed/product image assets.
+
+## Performance
+
+Lighthouse 12.8.2 mobile against the final live release:
+
+| Category | Score |
+| --- | ---: |
+| Performance | 100 |
+| Accessibility | 100 |
+| Best practices | 100 |
+| SEO | 100 |
+
+Measured FCP 1.0 s, LCP 1.2 s, Speed Index 1.0 s, TBT 0 ms, and CLS 0.
+
+## Reproduce
 
 ```bash
 npm ci
-jq -r '.[].test' .factory/claims.json
-# Run every printed command exactly.
 npm test
 npm run build
 npm run test:e2e
-curl -i --max-redirs 0 \
-  https://api.sociobot.in/api/v1/products/page-pointer/checkout
+npm run test:billing
+
+# Run each declared claim exactly as a verifier will.
+node -e "for (const claim of require('./.factory/claims.json')) console.log(claim.test)"
+
+# Production identity and route policy.
+curl -sS https://page-pointer.sociobot.in/ -o /tmp/page-pointer-live.html
+sha256sum dist/index.html /tmp/page-pointer-live.html
+curl -I https://page-pointer.sociobot.in/
+curl -I https://page-pointer.sociobot.in/sw.js
+curl -I https://page-pointer.sociobot.in/assets/page-pointer-social-1200x630.jpg
+
+# Semantic/console smoke.
+VERIFY_NODE_MODULES="$PWD/node_modules" \
+  /opt/fleet/lib/verify-url.sh https://page-pointer.sociobot.in/ /tmp/page-pointer-root
 ```
 
-No product source was modified during verification.
+## Known limits and next validation
+
+- Camera behavior is covered with deterministic fake-camera frames in both
+  browser sizes. Recheck automatic placement on varied physical books during
+  the next family field study; glare, curvature, handwriting, columns, and
+  unusual layouts remain documented v1 limits.
+- Checkout registration and redirects are live-verified, while license states
+  use recorded Sociobot responses in tests. No real payment was submitted
+  during repair verification.
+
+There are no known release-blocking gaps.
