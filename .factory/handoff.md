@@ -33,16 +33,21 @@ tagged automated test. Targeted post-repair claim evidence passed for demo
 sandbox, demo reset, camera states, local-only reading, license transfer, and
 the 24-hour cache.
 
-## Deployment
+## Deployment and cold live check
 
-Repair commit: pending final commit. Deploy with:
+Commit `3cc6a620a191d62616c5fc2b6364403fb4300eb6` was deployed with
+`/opt/fleet/lib/deploy-static.sh page-pointer dist`. Azure deployment ID:
+`65beda64-13c1-4fde-901c-cb239b50c1ea`.
 
-```text
-/opt/fleet/lib/deploy-static.sh page-pointer dist
-```
-
-Then run `/opt/fleet/lib/verify-url.sh https://page-pointer.sociobot.in/ <evidence-dir>`
-and recheck `/`, `/demo`, `/privacy`, `/terms`, and an unknown route cold.
+Cold `https://page-pointer.sociobot.in/` returned 200 with no console errors,
+one h1/main, `lang=en`, and no missing image alt text. Live and built
+`index.html` SHA-256 both equal
+`477b6afae51816d0951f89aa462fae3d73f5ad95d3f3049bebe44604dddaf19c`.
+Playwright Axe on the live home page found zero serious or critical violations.
+The live interaction check passed the demo banner/isolation/reset, offline
+camera and sample movement, route focus/back-scroll, external checkout label,
+and designed 404 metadata/action. Evidence is under
+`.factory/evidence/polish-2/live/`.
 
 ## Remaining work
 

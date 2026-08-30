@@ -1,0 +1,14 @@
+{
+  "url": "https://page-pointer.sociobot.in/",
+  "loadMs": 755,
+  "errors": [],
+  "a11y": {
+    "title": "Page Pointer — follow words in physical books",
+    "lang": "en",
+    "h1": 1,
+    "main": true,
+    "imgsMissingAlt": 0,
+    "buttonsUnlabeled": 0,
+    "textLength": 1647
+  }
+}

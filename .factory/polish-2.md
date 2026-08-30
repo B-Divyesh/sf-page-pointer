@@ -32,3 +32,5 @@ Review sources: `.factory/review-1.md` and `.factory/review-2.md`.
 - Billing: `npm run test:billing` — production and pilot both reported INR 249.00 and HTTP 303.
 - Claim commands run after the repair include `@claim:demo-sandbox`, `@claim:demo-reset`, `@claim:camera-states`, `@claim:local-only-reading`, `@claim:license-cache-24h`, and `@claim:license-verification-transfer`.
 - Pre-deploy live verification is recorded in `.factory/handoff.md`; the final URL is <https://page-pointer.sociobot.in>.
+- Deployed commit: `3cc6a620a191d62616c5fc2b6364403fb4300eb6`; Azure deployment ID: `65beda64-13c1-4fde-901c-cb239b50c1ea`.
+- Cold live evidence: `.factory/evidence/polish-2/live/verify.json`, `live-interaction-report.json`, `screenshot-desktop.png`, and `screenshot-mobile.png`.
