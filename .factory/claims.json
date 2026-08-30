@@ -1,10 +1,10 @@
 [
   {
     "id": "demo-sandbox",
-    "claim": "The sample guide uses separate demo data and supports tap, word or line mode, Next, Previous, Arrow keys, and Space.",
+    "claim": "The sample guide uses separate demo data without camera permission and supports tap, word or line mode, Next, Previous, Arrow keys, and Space.",
     "where": "landing demo action, guide controls, README",
     "test": "npm run test:e2e -- --grep @claim:demo-sandbox",
-    "sandbox": "fresh /demo context places and moves the sample guide with every public control, records a session, and asserts only demo:page-pointer exists"
+    "sandbox": "fresh /demo context records no camera request, places and moves the sample guide with every public control, records a session, and asserts only demo:page-pointer exists"
   },
   {
     "id": "demo-reset",
@@ -22,17 +22,17 @@
   },
   {
     "id": "camera-states",
-    "claim": "The guide requests the rear camera without sending frames, saves a brief summary, releases the stream, and explains recovery states.",
+    "claim": "The guide requests the rear camera without sending camera frames or other network requests, saves a brief summary, releases the stream, and explains recovery states.",
     "where": "Open camera flow, privacy copy, error states, README",
     "test": "npm run test:e2e -- --grep @claim:camera-states",
-    "sandbox": "fresh demo-to-real context records requests and a camera summary, then uses a blank frame, denied permission fixture, and missing-camera fixture"
+    "sandbox": "fresh demo-to-real context snapshots requests after the shell loads, places and moves a synthetic camera frame, asserts no later network request or stored frame bytes, then checks the summary, release, blank frame, denied permission, and missing-camera fixtures"
   },
   {
     "id": "local-only-reading",
-    "claim": "Reading sends no third-party request, and exported data contains no page image or recognized text.",
+    "claim": "Reading sends no network request, and exported data contains no page image or recognized text.",
     "where": "landing facts, privacy section, Privacy page, README",
     "test": "npm run test:e2e -- --grep @claim:local-only-reading",
-    "sandbox": "fresh /demo context records every request and inspects the complete exported JSON"
+    "sandbox": "fresh /demo context snapshots requests after the shell loads, operates the guide, and inspects the complete exported JSON and local storage"
   },
   {
     "id": "local-data-roundtrip",
@@ -64,10 +64,17 @@
   },
   {
     "id": "paid-supporter",
-    "claim": "The optional Supporter pack costs ₹249 once and adds saved guide colors plus a quiet ten-minute timer.",
+    "claim": "The optional Supporter pack costs ₹249 once and adds saved guide colors plus a ten-minute timer.",
     "where": "Supporter section, Terms, README",
     "test": "npm run test:e2e -- --grep @claim:paid-supporter",
     "sandbox": "fresh real context asserts a recorded INR 249 one-time catalogue and checkout fixture, then checks purchase, restore, locking, saved color, timer completion, and the exact checkout URL"
+  },
+  {
+    "id": "license-verification-transfer",
+    "claim": "When restoring the Supporter pack, Page Pointer sends the license only to Sociobot to check it.",
+    "where": "Privacy page and restore purchase flow",
+    "test": "npm run test:e2e -- --grep @claim:license-verification-transfer",
+    "sandbox": "fresh real context restores a fixture license, records the outgoing verification request, and asserts a GET to the Sociobot verification endpoint carries only the encoded license query value with no body"
   },
   {
     "id": "license-cache-24h",

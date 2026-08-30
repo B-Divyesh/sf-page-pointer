@@ -60,15 +60,15 @@ function renderLegal(route: string): void {
       ${privacy ? `
         <p class="lede">Your camera frames stay on your device. Page Pointer does not send, record, or save pictures of books.</p>
         <h2>What stays on this device</h2><p>Your guide preferences and up to 50 brief session summaries stay in this browser. Each summary contains a start time, duration, and camera source. The demo uses a separate temporary store. Page Pointer deletes it when you start for real. A purchased license and its last check stay in this browser’s local storage. You can export or erase local reading data in Settings.</p>
-        <h2>What leaves the device</h2><p>Nothing leaves during reading. If you buy or restore the Supporter pack, Page Pointer sends the license to Sociobot for purchase verification. Checkout opens on Sociobot.</p>
+        <h2>What leaves the device</h2><p>Nothing leaves during reading. When you restore the Supporter pack, Page Pointer sends your license only to Sociobot to check it. Checkout opens on Sociobot.</p>
         <h2>Camera and network</h2><p>The browser provides camera access only after you agree. The app checks each camera frame in memory, then discards it. The app loads no tracking, third-party code, remote fonts, or embedded checkout.</p>
         <h2>Your choices</h2><p>You can stop the camera, deny permission, use the demo, export local data, or erase it. Removing this site's browser data also removes all preferences and the saved license.</p>
         <h2>Contact</h2><p>Questions can be sent to <a href="mailto:privacy@sociobot.in">privacy@sociobot.in</a>.</p>
       ` : `
         <p class="lede">Page Pointer is a reading aid provided as-is. It is not a diagnostic, medical, tutoring, or assessment service.</p>
         <h2>Using the guide</h2><p>You may use the app at home, in class, or while tutoring. Keep control of the phone and protect it from falls. Do not rely on automatic detection where a mistake could cause harm.</p>
-        <h2>Supporter purchase</h2><p>The optional Supporter pack costs ₹249 once. It adds saved guide colors and the quiet ten-minute timer. The camera guide, manual controls, privacy controls, and data export remain free. Checkout opens on Sociobot.</p>
-        <h2>Availability and limits</h2><p>This version works with printed text that uses the Latin alphabet. Curved pages, glare, illustrations, unusual layouts, or low contrast can affect detection. We may improve or discontinue the service. Where the law permits, the service has no warranties. Liability is limited to the amount you paid.</p>
+        <h2>Supporter purchase</h2><p>The optional Supporter pack costs ₹249 once. It adds saved guide colors and a ten-minute timer. The camera guide, manual controls, privacy controls, and data export remain free. Checkout opens on Sociobot.</p>
+        <h2>Make placement clearer</h2><p>Flatten the page, reduce glare, keep illustrations clear of the target, and tap again. You can also use Previous and Next. We may improve or discontinue the service. Where the law permits, the service has no warranties. Liability is limited to the amount you paid.</p>
         <h2>Respectful use</h2><p>Do not record people without permission or violate copyright. Do not interfere with the app or billing service.</p>
         <h2>Contact</h2><p>Questions can be sent to <a href="mailto:support@sociobot.in">support@sociobot.in</a>.</p>
       `}
@@ -141,7 +141,7 @@ function renderHome(): void {
         <div class="supporter-tools" id="supporter-tools" hidden>
           <div><p class="eyebrow">Supporter pack</p><strong>Saved guide color</strong></div>
           <div class="swatches" role="group" aria-label="Guide color"><button type="button" data-color="#F7C948" style="--swatch:#F7C948" aria-label="Yellow guide"></button><button type="button" data-color="#6DE2E0" style="--swatch:#6DE2E0" aria-label="Cyan guide"></button><button type="button" data-color="#FF8D8D" style="--swatch:#FF8D8D" aria-label="Coral guide"></button></div>
-          <button class="quiet-button light" id="timer-button" type="button">Start quiet 10-minute timer</button>
+          <button class="quiet-button light" id="timer-button" type="button">Start 10-minute timer</button>
           <span id="timer-status" aria-live="polite"></span>
         </div>
       </section>
@@ -150,11 +150,11 @@ function renderHome(): void {
         <div class="section-rule"><span>How it works</span><span>Three steps</span></div>
         <h2 id="method-title">Follow each word in a physical book</h2>
         <ol class="method-grid">
-          <li><span class="method-number">01</span><div><h3>Aim the rear camera</h3><p>Hold the rear camera above a well-lit printed page. Landscape works best.</p></div></li>
+          <li><span class="method-number">01</span><div><h3>Aim the rear camera</h3><p>Hold the rear camera above the page. Turn the phone sideways before you aim.</p></div></li>
           <li><span class="method-number">02</span><div><h3>Tap the current word</h3><p>Touch the word being read. Page Pointer finds the nearest ink line—without reading it.</p></div></li>
           <li><span class="method-number">03</span><div><h3>Follow with Next</h3><p>Use Next or the arrow keys to travel word by word. Switch to a full-line guide anytime.</p></div></li>
         </ol>
-        <div class="limits"><strong>Limits:</strong> This version works with printed text that uses the Latin alphabet. Curved pages, glare, illustrations, or unusual layouts can confuse placement. Tap again or use Previous and Next.</div>
+        <div class="limits"><strong>When placement misses:</strong> Flatten the page, reduce glare, move away from illustrations, and tap again. You can also use Previous and Next.</div>
       </section>
 
       <section class="local-section" aria-labelledby="local-title">
@@ -163,7 +163,7 @@ function renderHome(): void {
       </section>
 
       ${isDemo ? '' : `<section class="supporter" aria-labelledby="supporter-title">
-        <div><p class="eyebrow">Optional Supporter pack · one-time</p><h2 id="supporter-title">Add colors and a timer for ₹249</h2><p>The complete reading guide stays free. One purchase adds saved guide colors and a quiet ten-minute session timer.</p><p class="legal-copy">Checkout opens on Sociobot.</p><nav class="supporter-legal" aria-label="Supporter purchase policies"><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav></div>
+        <div><p class="eyebrow">Optional Supporter pack · one-time</p><h2 id="supporter-title">Add colors and a timer for ₹249</h2><p>The complete reading guide stays free. One purchase adds saved guide colors and a ten-minute session timer.</p><p class="legal-copy">Checkout opens on Sociobot.</p><nav class="supporter-legal" aria-label="Supporter purchase policies"><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav></div>
         <div class="purchase-panel" id="purchase-panel">
           <a class="primary-button" id="buy-link" href="#" aria-label="Buy once for ₹249 on Sociobot; opens checkout">Buy once for ₹249 on Sociobot (opens checkout)</a>
           <form id="restore-form"><label for="license-input">Already purchased? Paste your license</label><div><input id="license-input" name="license" autocomplete="off" spellcheck="false"><button type="submit" class="secondary-button">Restore Supporter pack</button></div></form>
@@ -418,14 +418,14 @@ async function initialiseHome(): Promise<void> {
   timerButton.addEventListener('click', () => {
     const status = byId<HTMLSpanElement>('timer-status');
     if (timerInterval) {
-      window.clearInterval(timerInterval); timerInterval = 0; timerStarted = 0; status.textContent = 'Timer stopped.'; timerButton.textContent = 'Start quiet 10-minute timer'; return;
+      window.clearInterval(timerInterval); timerInterval = 0; timerStarted = 0; status.textContent = 'Timer stopped.'; timerButton.textContent = 'Start 10-minute timer'; return;
     }
     timerStarted = Date.now();
     timerButton.textContent = 'Stop timer';
     const update = () => {
       const remaining = Math.max(0, 600 - Math.floor((Date.now() - timerStarted) / 1000));
       status.textContent = `${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, '0')} remaining`;
-      if (remaining === 0) { window.clearInterval(timerInterval); timerInterval = 0; timerButton.textContent = 'Start 10-minute timer again'; status.textContent = 'Ten minutes complete.'; navigator.vibrate?.([100, 80, 100]); }
+      if (remaining === 0) { window.clearInterval(timerInterval); timerInterval = 0; timerButton.textContent = 'Start 10-minute timer again'; status.textContent = 'Ten minutes complete.'; }
     };
     update(); timerInterval = window.setInterval(update, 1000);
   });

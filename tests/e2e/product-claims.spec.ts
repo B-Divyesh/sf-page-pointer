@@ -17,10 +17,10 @@ async function exportFrom(page: Page): Promise<{ preferences: { mode: string; gu
   return await readDownload(await pending) as { preferences: { mode: string; guideColor: string }; sessions: unknown[] };
 }
 
-test('@claim:camera-states the rear-camera guide opens, stops its stream, and explains denied, missing, and low-contrast states', async ({ page, context }) => {
+test('@claim:camera-states the rear-camera guide sends no frame request, stops its stream, and explains recovery states', async ({ page, context }) => {
   const origin = 'http://127.0.0.1:4173';
-  const requests: string[] = [];
-  page.on('request', (request) => requests.push(request.url()));
+  const requests: Array<{ url: string; method: string; body: string | null }> = [];
+  page.on('request', (request) => requests.push({ url: request.url(), method: request.method(), body: request.postData() }));
   await context.grantPermissions(['camera'], { origin });
   await page.goto('/demo');
   await page.getByRole('button', { name: 'Start for real' }).click();
@@ -35,6 +35,7 @@ test('@claim:camera-states the rear-camera guide opens, stops its stream, and ex
       return stream;
     };
   });
+  const loadedRequests = requests.length;
   await page.getByRole('button', { name: 'Open camera' }).click();
   await expect(page.getByRole('heading', { name: 'Place the guide' })).toBeVisible();
   await expect(page.locator('#camera-video')).toBeVisible();
@@ -59,6 +60,9 @@ test('@claim:camera-states the rear-camera guide opens, stops its stream, and ex
   });
   await page.locator('#viewfinder').click({ position: { x: 80, y: 80 } });
   await expect(page.locator('#guide-status')).toContainText('No clear line found.');
+  await page.getByRole('button', { name: 'Next word' }).click();
+  await page.waitForTimeout(800);
+  expect(requests.slice(loadedRequests)).toEqual([]);
   await page.waitForTimeout(3_100);
   await page.getByRole('button', { name: 'Close guide' }).click();
   expect(await page.evaluate(() => (window as typeof window & { requestedCameraTrack?: MediaStreamTrack }).requestedCameraTrack?.readyState)).toBe('ended');
@@ -66,6 +70,7 @@ test('@claim:camera-states the rear-camera guide opens, stops its stream, and ex
   await page.locator('details.settings').evaluate((element: HTMLDetailsElement) => { element.open = true; });
   const cameraData = await exportFrom(page);
   expect(cameraData.sessions).toEqual([expect.objectContaining({ source: 'camera' })]);
+  expect(JSON.stringify({ cameraData, storage: await page.evaluate(() => Object.entries(localStorage)) })).not.toMatch(/data:image|base64|canvas/i);
 
   await page.reload();
   await page.evaluate(() => {
@@ -81,7 +86,8 @@ test('@claim:camera-states the rear-camera guide opens, stops its stream, and ex
   await page.evaluate(() => Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: undefined }));
   await page.getByRole('button', { name: 'Open camera' }).click();
   await expect(page.locator('#camera-message')).toContainText('This browser cannot open a camera.');
-  expect([...new Set(requests.map((url) => new URL(url).origin))]).toEqual([origin]);
+  expect([...new Set(requests.map((request) => new URL(request.url).origin))]).toEqual([origin]);
+  expect(requests.every((request) => request.method === 'GET' && request.body === null)).toBe(true);
 });
 
 test('@claim:local-data-roundtrip real data imports, exports at a 50-session cap, and erases locally', async ({ page }) => {
@@ -151,7 +157,7 @@ test('@claim:paid-supporter a purchase or restore activates saved colors and the
   await expect(page.locator('#supporter-tools')).toHaveCSS('border-top-color', 'rgb(102, 134, 139)');
   expect(await page.locator('#instrument').evaluate((element) => element.style.getPropertyValue('--guide-color'))).toBe('#6DE2E0');
   await page.clock.install();
-  await page.getByRole('button', { name: 'Start quiet 10-minute timer' }).click();
+  await page.getByRole('button', { name: 'Start 10-minute timer' }).click();
   await expect(page.locator('#timer-status')).toHaveText('10:00 remaining');
   await page.clock.fastForward(600_100);
   await expect(page.locator('#timer-status')).toHaveText('Ten minutes complete.');
@@ -174,6 +180,28 @@ test('@claim:paid-supporter a purchase or restore activates saved colors and the
   await page.getByRole('button', { name: 'Open camera' }).click();
   await expect(page.locator('#supporter-tools')).toBeHidden();
   expect(verifiedTokens).toEqual(['purchased-license', 'restored-license', 'revoked-license']);
+});
+
+test('@claim:license-verification-transfer restoring a license sends only that license to Sociobot', async ({ page }) => {
+  const verificationRequests: Array<{ url: string; method: string; body: string | null }> = [];
+  await page.route('https://pilot-api.sociobot.in/api/v1/products/page-pointer/verify?*', async (route) => {
+    verificationRequests.push({ url: route.request().url(), method: route.request().method(), body: route.request().postData() });
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ valid: true, reason: 'ok' }) });
+  });
+  await page.goto('/');
+  await page.getByLabel('Already purchased? Paste your license').fill('only-this-license');
+  await page.getByRole('button', { name: 'Restore Supporter pack' }).click();
+  await expect(page.locator('#license-status')).toContainText('Purchase restored.');
+  expect(verificationRequests).toHaveLength(1);
+  const request = verificationRequests[0];
+  const url = new URL(request.url);
+  expect({ origin: url.origin, pathname: url.pathname, method: request.method, body: request.body, query: [...url.searchParams.entries()] }).toEqual({
+    origin: 'https://pilot-api.sociobot.in',
+    pathname: '/api/v1/products/page-pointer/verify',
+    method: 'GET',
+    body: null,
+    query: [['license', 'only-this-license']]
+  });
 });
 
 test('@claim:license-cache-24h automatic license verification reuses a verdict for 24 hours', async ({ page }) => {

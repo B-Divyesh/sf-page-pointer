@@ -3,6 +3,19 @@ import AxeBuilder from '@axe-core/playwright';
 
 const sameOrigin = (url: string) => new URL(url).origin === 'http://127.0.0.1:4173';
 
+async function readStoredValue(page: Page, databaseName: string, key: string): Promise<unknown> {
+  return await page.evaluate(async ({ databaseName, key }) => await new Promise<unknown>((resolve, reject) => {
+    const request = indexedDB.open(databaseName);
+    request.onsuccess = () => {
+      const database = request.result;
+      const get = database.transaction('local-data').objectStore('local-data').get(key);
+      get.onsuccess = () => { database.close(); resolve(get.result); };
+      get.onerror = () => { database.close(); reject(get.error); };
+    };
+    request.onerror = () => reject(request.error);
+  }), { databaseName, key });
+}
+
 async function installSyntheticCameraFrame(page: Page): Promise<void> {
   await page.evaluate(() => {
     const original = HTMLCanvasElement.prototype.getContext;
@@ -28,6 +41,13 @@ async function installSyntheticCameraFrame(page: Page): Promise<void> {
 }
 
 test('@claim:demo-sandbox the direct sample demo opens a usable guide in its own storage namespace', async ({ page }) => {
+  await page.addInitScript(() => {
+    const original = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+    navigator.mediaDevices.getUserMedia = async (...args) => {
+      (window as typeof window & { demoRequestedCamera?: boolean }).demoRequestedCamera = true;
+      return await original(...args);
+    };
+  });
   await page.goto('/demo');
   await expect(page).toHaveTitle('Demo — Page Pointer');
   await expect(page.getByRole('complementary', { name: 'Demo controls' })).toContainText('Demo — sample data, nothing is saved');
@@ -53,41 +73,67 @@ test('@claim:demo-sandbox the direct sample demo opens a usable guide in its own
   const names = await page.evaluate(async () => (await indexedDB.databases()).map((database) => database.name));
   expect(names).toContain('demo:page-pointer');
   expect(names).not.toContain('page-pointer');
+  expect(await page.evaluate(() => (window as typeof window & { demoRequestedCamera?: boolean }).demoRequestedCamera)).toBeUndefined();
 });
 
-test('@claim:demo-reset Reset demo discards its sample session and Start for real returns to real mode', async ({ page }) => {
+test('@claim:demo-reset Reset demo discards populated sample data and Start for real preserves real data', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('details.settings').evaluate((details: HTMLDetailsElement) => { details.open = true; });
+  await page.locator('#import-data').setInputFiles({
+    name: 'real-reading-data.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify({
+      version: 1,
+      preferences: { mode: 'line', guideColor: '#FF8D8D', thickness: 12 },
+      sessions: [],
+      exportedAt: new Date().toISOString()
+    }))
+  });
+  await expect(page.locator('#data-status')).toHaveText('Local data imported.');
   await page.goto('/demo');
   await expect(page.locator('#focus-guide')).toHaveClass(/is-visible/);
+  await page.getByRole('button', { name: 'Line' }).click();
   await page.waitForTimeout(3_100);
   await page.getByRole('button', { name: 'Close guide' }).click();
+  await page.waitForFunction(async () => {
+    const request = indexedDB.open('demo:page-pointer');
+    return await new Promise<boolean>((resolve) => {
+      request.onsuccess = () => {
+        const database = request.result;
+        const get = database.transaction('local-data').objectStore('local-data').get('sessions');
+        get.onsuccess = () => { database.close(); resolve(Array.isArray(get.result) && get.result.length === 1); };
+      };
+    });
+  });
+  expect(await readStoredValue(page, 'demo:page-pointer', 'preferences')).toMatchObject({ mode: 'line' });
+  expect(await readStoredValue(page, 'demo:page-pointer', 'sessions')).toEqual([expect.objectContaining({ source: 'demo' })]);
+  expect(await readStoredValue(page, 'page-pointer', 'preferences')).toMatchObject({ mode: 'line', guideColor: '#FF8D8D' });
   await Promise.all([
     page.waitForEvent('framenavigated', (frame) => frame === page.mainFrame()),
     page.getByRole('button', { name: 'Reset demo' }).click()
   ]);
   await expect(page.locator('#focus-guide')).toHaveClass(/is-visible/);
-  const sessions = await page.evaluate(async () => new Promise<unknown[]>((resolve, reject) => {
-    const request = indexedDB.open('demo:page-pointer');
-    request.onsuccess = () => {
-      const database = request.result;
-      const get = database.transaction('local-data').objectStore('local-data').get('sessions');
-      get.onsuccess = () => { database.close(); resolve(get.result ?? []); };
-      get.onerror = () => { database.close(); reject(get.error); };
-    };
-    request.onerror = () => reject(request.error);
-  }));
-  expect(sessions).toEqual([]);
+  expect(await readStoredValue(page, 'demo:page-pointer', 'preferences')).toMatchObject({ mode: 'word', guideColor: '#F7C948' });
+  expect(await readStoredValue(page, 'demo:page-pointer', 'sessions')).toBeUndefined();
+  expect(await readStoredValue(page, 'page-pointer', 'preferences')).toMatchObject({ mode: 'line', guideColor: '#FF8D8D' });
   await page.getByRole('button', { name: 'Start for real' }).click();
   await page.waitForURL('**/');
   await expect(page.getByRole('complementary', { name: 'Demo controls' })).toHaveCount(0);
   const names = await page.evaluate(async () => (await indexedDB.databases()).map((database) => database.name));
   expect(names).not.toContain('demo:page-pointer');
+  expect(await readStoredValue(page, 'page-pointer', 'preferences')).toMatchObject({ mode: 'line', guideColor: '#FF8D8D' });
 });
 
-test('@claim:local-only-reading sample reading sends no third-party request and does not export image or text data', async ({ page }) => {
-  const requests: string[] = [];
-  page.on('request', (request) => requests.push(request.url()));
+test('@claim:local-only-reading sample reading sends no network request and does not export image or text data', async ({ page }) => {
+  const requests: Array<{ url: string; method: string; body: string | null }> = [];
+  page.on('request', (request) => requests.push({ url: request.url(), method: request.method(), body: request.postData() }));
   await page.goto('/demo');
   await expect(page.locator('#focus-guide')).toHaveClass(/is-visible/);
+  const loadedRequests = requests.length;
+  await page.getByRole('button', { name: 'Next word' }).click();
+  await page.getByRole('button', { name: 'Line' }).click();
+  await page.waitForTimeout(800);
+  expect(requests.slice(loadedRequests)).toEqual([]);
   await page.locator('details.settings').evaluate((details) => { (details as HTMLDetailsElement).open = true; });
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export JSON' }).click();
@@ -100,9 +146,9 @@ test('@claim:local-only-reading sample reading sends no third-party request and 
     stream!.on('error', reject);
   });
   const data = JSON.parse(exported);
-  expect(requests.every(sameOrigin)).toBe(true);
+  expect(requests.every((request) => sameOrigin(request.url))).toBe(true);
   expect(data.sessions).toEqual([]);
-  expect(JSON.stringify(data)).not.toMatch(/kite|Mina|image|frame|canvas/i);
+  expect(JSON.stringify({ data, storage: await page.evaluate(() => Object.entries(localStorage)) })).not.toMatch(/kite|Mina|data:image|base64|canvas/i);
 });
 
 test('@claim:offline-demo the camera and sample guides work offline after the first visit', async ({ browser, baseURL }) => {

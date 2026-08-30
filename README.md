@@ -1,6 +1,6 @@
 # Page Pointer
 
-Page Pointer helps parents, tutors, and emerging readers follow the current word in a physical book. Aim a phone at the page and tap the current word. A high-contrast guide marks one word or line. The app checks each camera frame in memory, then discards it. It never reads, uploads, or stores the book’s words.
+Page Pointer helps parents, tutors, and emerging readers follow the current word in a physical book. Aim a phone at the page and tap the current word. A guide marks one word or line. The app checks each camera frame in memory, then discards it. It never reads, uploads, or stores the book’s words.
 
 Live product: <https://page-pointer.sociobot.in>
 
@@ -41,7 +41,7 @@ The factory deployment command is exactly `npm ci && npm test && npm run build`;
 ## Claims, demo, and billing
 
 Every visitor-facing claim is listed in [`.factory/claims.json`](.factory/claims.json)
-with an executable Playwright regression. The sandbox behavior and storage
+with an executable automated test. The sandbox behavior and storage
 namespace are documented in [`.factory/demo.md`](.factory/demo.md).
 
 `.factory/billing.md` records both checkout environments, the daily license
@@ -52,11 +52,11 @@ both ₹249 checkout mappings against the live Sociobot catalogues.
 
 The app uses Vite and TypeScript without a UI framework. `src/detection.ts` removes color from each in-memory camera frame before checking page contrast. It groups dark marks into printed lines and approximate word boxes. It does not recognize or retain text. IndexedDB stores only preferences and up to 50 session summaries. A supplied license stays in this browser’s local storage. Automatic license checks reuse a result for 24 hours.
 
-The app loads no tracking, third-party code, remote fonts, or embedded checkout. Atkinson Hyperlegible and IBM Plex Mono are bundled under their open licenses.
+The app loads no tracking, third-party code, remote fonts, or embedded checkout.
 
 ## Known limits
 
-This version works with well-lit, horizontal, printed text that uses the Latin alphabet. Curvature, glare, columns, illustrations, handwriting, vertical text, and decorative layouts can reduce placement quality. Users can tap again or use the step controls. Page Pointer does not diagnose or treat dyslexia.
+Hold the phone over a flat page and turn it sideways before you aim. If placement misses, tap again or use the step controls. Page Pointer does not diagnose or treat dyslexia.
 
 Visual direction and asset provenance are in [`.factory/design.md`](.factory/design.md). Build verification and remaining product validation are in [`.factory/handoff.md`](.factory/handoff.md).
 

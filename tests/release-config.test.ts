@@ -63,9 +63,25 @@ test('the copy audit covers static and dynamic landing sentences without unresol
   expect(audit).toContain('## Landing page: dynamic states');
   expect(audit).toContain('No audited sentence exceeds 22 words.');
   expect(audit).not.toMatch(/\|\s*(Fail|Flag)\s*\|/i);
-  const counts = [...audit.matchAll(/\|\s*(\d+)\s*\|\s*Pass\s*\|/g)].map((match) => Number(match[1]));
-  expect(counts.length).toBeGreaterThan(50);
-  expect(Math.max(...counts)).toBeLessThanOrEqual(22);
+  const rows = audit.split(/\r?\n/).flatMap((line) => {
+    const match = line.match(/^\|\s*(.*?)\s*\|\s*(\d+)\s*\|\s*Pass\s*\|$/);
+    return match ? [{ copy: match[1], count: Number(match[2]) }] : [];
+  });
+  const countWords = (copy: string) => copy.split(/\s+/).filter((token) => /[\p{L}\p{N}]/u.test(token)).length;
+  const rawProductSource = [
+    readFileSync(resolve('src/main.ts'), 'utf8'),
+    readFileSync(resolve('src/storage.ts'), 'utf8')
+  ].join('\n').replaceAll('’', "'");
+  const productSource = rawProductSource
+    .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').replaceAll('’', "'");
+  expect(rows.length).toBeGreaterThan(50);
+  for (const row of rows) {
+    expect(row.count, `incorrect audit count for: ${row.copy}`).toBe(countWords(row.copy));
+    const sourcePhrase = row.copy.replace(/[.!?…]+$/, '').replaceAll('’', "'").replace(/\s+/g, ' ');
+    const dynamicSuffix = sourcePhrase.split(' ').slice(1).join(' ');
+    expect(rawProductSource.includes(sourcePhrase) || productSource.includes(sourcePhrase) || (dynamicSuffix.length > 4 && rawProductSource.includes(dynamicSuffix)), `audited copy no longer occurs in source: ${row.copy}`).toBe(true);
+  }
+  expect(Math.max(...rows.map((row) => row.count))).toBeLessThanOrEqual(22);
 });
 
 test('every declared claim has exactly one tagged regression and required behavior groups are registered', () => {
@@ -74,7 +90,7 @@ test('every declared claim has exactly one tagged regression and required behavi
   expect(new Set(ids).size).toBe(ids.length);
   expect(ids).toEqual(expect.arrayContaining([
     'camera-states', 'local-ink-detection', 'local-data-roundtrip', 'pwa-update', 'paid-supporter',
-    'license-cache-24h', 'private-runtime'
+    'license-cache-24h', 'private-runtime', 'license-verification-transfer'
   ]));
   const testSources = [
     'tests/detection.test.ts', 'tests/e2e/app.spec.ts', 'tests/e2e/product-claims.spec.ts'

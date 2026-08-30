@@ -1,9 +1,10 @@
-# Copy audit — 2026-08-29
+# Copy audit — 2026-08-30
 
 Scope: every complete sentence a visitor can see on the landing page,
 including demo content and dynamic status or error text. Button labels,
 instrument readouts, and short section labels are listed separately. Words are
-counted by whitespace. Hyphenated terms count as one word.
+counted as whitespace-delimited tokens containing at least one letter or
+number. Hyphenated terms count as one word; standalone punctuation does not.
 
 ## Landing page: static sentences
 
@@ -14,34 +15,33 @@ counted by whitespace. Hyphenated terms count as one word.
 | Keep emerging readers on the right word. | 7 | Pass |
 | For parents, tutors, and emerging readers, it marks the current word on a physical book. | 15 | Pass |
 | Opens the sample guide with a short story. | 8 | Pass |
-| Frames stay on this device. | 6 | Pass |
+| Frames stay on this device. | 5 | Pass |
 | No account needed. | 3 | Pass |
-| Works offline after its first visit. | 7 | Pass |
+| Works offline after its first visit. | 6 | Pass |
 | An open illustrated book and phone are arranged on a cyan drafting mat. | 13 | Pass |
 | A yellow guide crosses the phone screen. | 7 | Pass |
 | Hold the phone steady above the page, then tap the word being read. | 13 | Pass |
 | Camera view. | 2 | Pass |
 | Tap or press Enter to place the reading guide. | 9 | Pass |
 | The kite danced above the hill. | 6 | Pass |
-| Mina held the string and smiled. | 7 | Pass |
-| Up, up, it climbed into the blue. | 8 | Pass |
+| Mina held the string and smiled. | 6 | Pass |
+| Up, up, it climbed into the blue. | 7 | Pass |
 | Ready to place. | 3 | Pass |
 | Tap a printed word. | 4 | Pass |
-| Hold the rear camera above a well-lit printed page. | 9 | Pass |
-| Landscape works best. | 3 | Pass |
+| Hold the rear camera above the page. | 7 | Pass |
+| Turn the phone sideways before you aim. | 7 | Pass |
 | Touch the word being read. | 5 | Pass |
 | Page Pointer finds the nearest ink line—without reading it. | 9 | Pass |
 | Use Next or the arrow keys to travel word by word. | 11 | Pass |
 | Switch to a full-line guide anytime. | 6 | Pass |
-| This version works with printed text that uses the Latin alphabet. | 11 | Pass |
-| Curved pages, glare, illustrations, or unusual layouts can confuse placement. | 10 | Pass |
-| Tap again or use Previous and Next. | 7 | Pass |
-| The app checks each camera frame in memory, then discards it. | 10 | Pass |
+| Flatten the page, reduce glare, move away from illustrations, and tap again. | 12 | Pass |
+| You can also use Previous and Next. | 7 | Pass |
+| The app checks each camera frame in memory, then discards it. | 11 | Pass |
 | It never reads, uploads, or stores the book’s words. | 9 | Pass |
 | Preferences and brief session summaries stay in this browser. | 9 | Pass |
 | Export, import, or erase them whenever you like. | 8 | Pass |
 | The complete reading guide stays free. | 6 | Pass |
-| One purchase adds saved guide colors and a quiet ten-minute session timer. | 12 | Pass |
+| One purchase adds saved guide colors and a ten-minute session timer. | 11 | Pass |
 | Checkout opens on Sociobot. | 4 | Pass |
 | No account needed. | 3 | Pass |
 | An app update is ready. | 5 | Pass |
@@ -103,7 +103,7 @@ These fragments are direct names or states, not marketing sentences: **Camera
 reading guide**, **Open camera**, **Try it with sample data**, **Setup**,
 **Place the guide**, **Close guide**, **Rear camera**, **Sample guide · local**,
 **Frame stays local**, **Word**, **Line**, **Previous**, **Next**, **Supporter
-pack**, **Saved guide color**, **Start quiet 10-minute timer**, **How it
+pack**, **Saved guide color**, **Start 10-minute timer**, **How it
 works**, **Three steps**, **Aim the rear camera**, **Tap the current word**,
 **Follow with Next**, **Limits**, **Local
 data**, **Local data settings**, **Export JSON**, **Import JSON**, **Erase
@@ -113,6 +113,8 @@ local data**, **Optional Supporter pack · one-time**, **Privacy**, **Terms**,
 coordinate/timer readouts.
 
 No audited sentence exceeds 22 words. None uses the banned marketing words.
+`tests/release-config.test.ts` derives every table count with the stated rule
+and confirms that the audited text still occurs in the product source.
 The first screen states the job, audience, first action, demo result, privacy,
 account requirement, and offline behavior in one screen at 390 px.
 
