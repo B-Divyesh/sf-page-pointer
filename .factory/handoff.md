@@ -1,21 +1,10 @@
-# Page Pointer polish 2 handoff
+# Page Pointer verification handoff — PASS
 
-## Outcome
+Candidate `53082b1a8c39e1638cbe6ba143cdf748d08ab701` is **PASS** for release.
+The live URL https://page-pointer.sociobot.in is byte-identical to this
+candidate's fresh production `index.html` build.
 
-Closed every finding in `.factory/review-1.md` and `.factory/review-2.md`.
-The isolated `/demo` and `/?demo=1` path remains one-click, uses only
-`demo:page-pointer`, shows reset/start-real controls, and never opens the real
-store. The blueprint drafting visual system and static PWA deployment class are
-unchanged.
-
-`F-2-1` now has a real no-network-after-load camera regression; `F-2-2` proves
-that Reset clears populated demo data without touching seeded real data;
-`F-2-3` removes the unmeasured “quiet” promise; and `F-2-4` registers and tests
-the exact Sociobot-only license transfer. Unsupported comparative/scope claims
-were rewritten as usable guidance. See `.factory/polish-2.md` for the complete
-finding map.
-
-## Run and verify
+## How verified
 
 ```text
 npm ci
@@ -25,30 +14,23 @@ npm run test:e2e
 npm run test:billing
 ```
 
-On 2026-08-30 UTC, `npm test` passed 12 tests; `npm run build` produced
-`dist/` with 11.31 KB gzipped application JS and 5.36 KB gzipped CSS; and
-`npm run test:billing` reported production and pilot INR 249.00, HTTP 303.
-Exact claim commands are in `.factory/claims.json`; each has exactly one
-tagged automated test. Targeted post-repair claim evidence passed for demo
-sandbox, demo reset, camera states, local-only reading, license transfer, and
-the 24-hour cache.
+All 13 commands declared in `.factory/claims.json` were also run individually
+and passed. The complete suite passed: 12 Vitest tests and 30 Playwright tests
+on desktop and 390 px mobile. Production and pilot billing mapped to INR 249.00
+and their hosted checkout redirects. No lint script exists; `tsc --noEmit` is
+part of the successful production build.
 
-## Deployment and cold live check
+The live cold-read has a plainly-worded explanation and a one-click sample
+demo. Live request logging found only same-origin app assets during guide use;
+the service worker controls the page and an offline demo reload works. Axe
+found zero serious/critical findings on home, demo, legal, and 404 routes.
 
-Commit `3cc6a620a191d62616c5fc2b6364403fb4300eb6` was deployed with
-`/opt/fleet/lib/deploy-static.sh page-pointer dist`. Azure deployment ID:
-`65beda64-13c1-4fde-901c-cb239b50c1ea`.
+The license verification endpoint allowed 31 fresh requests and returned 429
+with `Retry-After: 3` on request 32. Bundle budgets pass: 11.31 KB gzip JS,
+5.36 KB gzip CSS, 49.8 KB fonts, and a 27.2 KB mobile hero AVIF.
 
-Cold `https://page-pointer.sociobot.in/` returned 200 with no console errors,
-one h1/main, `lang=en`, and no missing image alt text. Live and built
-`index.html` SHA-256 both equal
-`477b6afae51816d0951f89aa462fae3d73f5ad95d3f3049bebe44604dddaf19c`.
-Playwright Axe on the live home page found zero serious or critical violations.
-The live interaction check passed the demo banner/isolation/reset, offline
-camera and sample movement, route focus/back-scroll, external checkout label,
-and designed 404 metadata/action. Evidence is under
-`.factory/evidence/polish-2/live/`.
+## Evidence and remaining work
 
-## Remaining work
-
-None.
+Full independent evidence, claim-by-claim results, headers, accessibility,
+privacy, PWA, and deployment comparison are in `.factory/verification-7.md`.
+No defects or known gaps remain.
